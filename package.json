@@ -1,0 +1,31 @@
+{
+  "name": "browsenpm",
+  "version": "0.0.0",
+  "description": "Browse packages, users, code, stats and more the public npm registry in style.",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/nodejitsu/browsenpm.org.git"
+  },
+  "keywords": [
+    "Browse",
+    "packages",
+    "users",
+    "code",
+    "stats",
+    "npm",
+    "registry"
+  ],
+  "author": "Nodejitsu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nodejitsu/browsenpm.org/issues"
+  },
+  "homepage": "https://github.com/nodejitsu/browsenpm.org",
+  "dependencies": {
+    "bigpipe": "^0.1.0"
+  }
+}
