@@ -31,6 +31,7 @@
     "connect": "~2.14.2",
     "contour": "ssh+git://github.com/nodejitsu/contour.git#pageletify",
     "debug": "~0.7.4",
+    "ejs": "~0.8.5",
     "fusing": "~0.0.3",
     "nconf": "~0.6.9",
     "packages-pagelet": "ssh+git://github.com/nodejitsu/packages-pagelet.git"
