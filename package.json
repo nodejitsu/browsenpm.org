@@ -29,11 +29,15 @@
   "dependencies": {
     "bigpipe": "~0.1.0",
     "connect": "~2.14.2",
-    "contour": "ssh+git://github.com/nodejitsu/contour.git#pageletify",
+    "contour": "~0.1.0",
+    "cradle": "~0.6.7",
     "debug": "~0.7.4",
     "ejs": "~0.8.5",
     "fusing": "~0.0.3",
+    "githulk": "~0.0.5",
     "nconf": "~0.6.9",
-    "packages-pagelet": "ssh+git://github.com/nodejitsu/packages-pagelet.git"
+    "npm-registry": "~0.0.11",
+    "packages-pagelet": "~0.0.1",
+    "redis": "~0.10.1"
   }
 }

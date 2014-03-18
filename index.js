@@ -24,7 +24,7 @@ var pipe = BigPipe.createServer(port, {
 //
 pipe
   .before(connect.static(path.join(__dirname, 'public')))
-  .before(connect.favicon(path.join(__dirname, 'public', 'favicon.png')));
+ // .before(connect.favicon(path.join(__dirname, 'public', 'favicon.png')));
 
 //
 // Listen for errors and the listen event.
@@ -38,7 +38,6 @@ pipe.once('listening', function listening() {
 });
 
 //
-// Expose the server with references to
+// Expose the server.
 //
-pipe.configuration = configuration;
 module.exports = pipe;
