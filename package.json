@@ -4,7 +4,8 @@
   "description": "Browse packages, users, code, stats and more the public npm registry in style.",
   "main": "index.js",
   "scripts": {
-    "test": "npm test"
+    "test": "npm test",
+    "start": "node index"
   },
   "repository": {
     "type": "git",
@@ -26,6 +27,12 @@
   },
   "homepage": "https://github.com/nodejitsu/browsenpm.org",
   "dependencies": {
-    "bigpipe": "^0.1.0"
+    "bigpipe": "~0.1.0",
+    "connect": "~2.14.2",
+    "contour": "ssh+git://github.com/nodejitsu/contour.git#pageletify",
+    "debug": "~0.7.4",
+    "fusing": "~0.0.3",
+    "nconf": "~0.6.9",
+    "packages-pagelet": "ssh+git://github.com/nodejitsu/packages-pagelet.git"
   }
 }
