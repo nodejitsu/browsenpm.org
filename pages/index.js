@@ -1,17 +1,30 @@
 'use strict';
 
-var Cache = require('../cache')
-  , server = require('../index')
+var server = require('../index')
   , GitHulk = require('githulk')
   , Page = require('bigpipe').Page
   , Registry = require('npm-registry')
-  , configuration = require('nodejitsu-app').config;
+  , nodejitsu = require('nodejitsu-app');
+
+//
+// Get nodejitsu-app configuration and caching layer.
+//
+var Cache = nodejitsu.cache
+  , configuration = nodejitsu.config
+  , couchdb = configuration.get('couchdb')
+  , redisConf = configuration.get('redis');
+
+//
+// Initialize the cache persistance layers for both CouchDB and Redis.
+//
+var cradle = new (require('cradle')).Connection(couchdb)
+  , redis = require('redis').createClient(redisConf.port, redisConf.host);
 
 //
 // Initialize GitHulk and provide a CouchDB cache layer.
 //
 var githulk = new GitHulk({
-  cache: new Cache(configuration.get('couchdb')),
+  cache: new Cache('cradle', cradle, couchdb),
   token: configuration.get('github')
 });
 
@@ -32,9 +45,9 @@ Page.extend({
 
   pagelets: {
     package: require('packages-pagelet').extend({
-      cache: new Cache(configuration.get('redis')),
+      cache: new Cache('redis', redis, redisConf),
       githulk: githulk,
-      registry: registry,
+      registry: registry
     })
   }
 }).on(module);
