@@ -38,6 +38,7 @@
     "nconf": "~0.6.9",
     "npm-registry": "~0.0.11",
     "packages-pagelet": "~0.0.1",
-    "redis": "~0.10.1"
+    "redis": "~0.10.1",
+    "nodejitsu-app": "~0.4.2"
   }
 }

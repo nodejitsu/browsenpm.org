@@ -5,13 +5,13 @@ var Cache = require('../cache')
   , GitHulk = require('githulk')
   , Page = require('bigpipe').Page
   , Registry = require('npm-registry')
-  , configuration = require('../config');
+  , configuration = require('nodejitsu-app').config;
 
 //
 // Initialize GitHulk and provide a CouchDB cache layer.
 //
 var githulk = new GitHulk({
-  // cache: new Cache(configuration.get('couchdb')),
+  cache: new Cache(configuration.get('couchdb')),
   token: configuration.get('github')
 });
 
@@ -32,8 +32,8 @@ Page.extend({
 
   pagelets: {
     package: require('packages-pagelet').extend({
-      // cache: new Cache(configuration.get('redis')),
-      githulk:  githulk,
+      cache: new Cache(configuration.get('redis')),
+      githulk: githulk,
       registry: registry,
     })
   }

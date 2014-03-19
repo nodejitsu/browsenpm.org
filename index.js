@@ -3,8 +3,8 @@
 var path = require('path')
   , BigPipe = require('bigpipe')
   , connect = require('connect')
-  , configuration = require('./config')
-  , debug = require('debug')('browsenpm:server');
+  , debug = require('debug')('browsenpm:server')
+  , configuration = require('nodejitsu-app').config;
 
 //
 // Setup all the configuration
