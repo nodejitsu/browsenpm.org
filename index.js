@@ -12,11 +12,18 @@ var path = require('path')
 var port = configuration.get('port');
 
 //
+// Initialize the layout plugina and add valid path to base layout.
+//
+var layout = require('bigpipe-layout');
+layout.options = { base: path.join(__dirname, 'views', 'base.ejs') };
+
+//
 // Initialise the BigPipe server.
 //
 var pipe = BigPipe.createServer(port, {
   pages: __dirname +'/pages',
-  dist: __dirname +'/dist'
+  dist: __dirname +'/dist',
+  plugins: [ layout ]
 });
 
 //
