@@ -28,6 +28,7 @@
   "homepage": "https://github.com/nodejitsu/browsenpm.org",
   "dependencies": {
     "bigpipe": "~0.1.0",
+    "bigpipe-layout": "~0.0.3",
     "connect": "~2.14.2",
     "contour": "~0.1.0",
     "cradle": "~0.6.7",
@@ -35,9 +36,9 @@
     "ejs": "~0.8.5",
     "githulk": "~0.0.5",
     "nconf": "~0.6.9",
+    "nodejitsu-app": "~0.4.2",
     "npm-registry": "~0.0.11",
     "packages-pagelet": "~0.0.1",
-    "redis": "~0.10.1",
-    "nodejitsu-app": "~0.4.2"
+    "redis": "~0.10.1"
   }
 }

@@ -3,8 +3,9 @@ browsenpm.org
 
 Browse packages, users, code, stats and more the public npm registry in style.
 
-**Note: during development, browsenpm will depend on the [pageletify branch of contour],
-manually symlink or install this branch (npm was being an idiot with git again).**
+**Note: during development, browsenpm will depend on the [pageletify branch of contour]
+and the [cache branch of nodejitsu-app], manually symlink or install these branches
+(npm was being an idiot with git again).**
 
 ### Installation
 
@@ -16,3 +17,4 @@ npm install --reg https://us.registry.nodejitsu.com/ --strict-ssl=false
 ```
 
 [pageletify branch of contour]: https://github.com/nodejitsu/contour/tree/pageletify
+[cache branch of nodejitsu-app]: https://github.com/nodejitsu/nodejitsu-app/tree/cache
