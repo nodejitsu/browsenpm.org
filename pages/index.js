@@ -49,9 +49,9 @@ Page.extend({
         login: false,
         signup: false,
         navigation: [
-          { name: 'Recent', href: '/paas/' },
-          { name: 'Packages', href: '/enterprise/' },
-          { name: 'Authors', href: '/Authors/' },
+          { name: 'Recent', href: '/recent/' },
+          { name: 'Packages', href: '/packages/' },
+          { name: 'Authors', href: '/authors/' },
           { name: 'Help', href: '/help/' },
         ]
       }
