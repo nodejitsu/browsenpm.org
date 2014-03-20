@@ -43,11 +43,26 @@ Page.extend({
   view: '../views/package.ejs',
 
   pagelets: {
-    navigation: require('../contour').navigation,
+    navigation: require('../contour').navigation.extend({
+      data: {
+        base: '',
+        login: false,
+        signup: false,
+        navigation: [
+          { name: 'Recent', href: '/paas/' },
+          { name: 'Packages', href: '/enterprise/' },
+          { name: 'Authors', href: '/Authors/' },
+          { name: 'Help', href: '/help/' },
+        ]
+      }
+    }),
+
     package: require('packages-pagelet').extend({
       cache: new Cache('redis', redis, redisConf),
       githulk: githulk,
       registry: registry
-    })
+    }),
+
+    //footer: require('../contour').footer
   }
 }).on(module);
