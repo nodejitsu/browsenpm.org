@@ -1,7 +1,6 @@
 'use strict';
 
-var server = require('../index')
-  , GitHulk = require('githulk')
+var GitHulk = require('githulk')
   , Page = require('bigpipe').Page
   , Registry = require('npm-registry')
   , nodejitsu = require('nodejitsu-app');
@@ -44,6 +43,7 @@ Page.extend({
   view: '../views/package.ejs',
 
   pagelets: {
+    navigation: require('../contour').navigation,
     package: require('packages-pagelet').extend({
       cache: new Cache('redis', redis, redisConf),
       githulk: githulk,

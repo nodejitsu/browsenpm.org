@@ -21,8 +21,8 @@ layout.options = { base: path.join(__dirname, 'views', 'base.ejs') };
 // Initialise the BigPipe server.
 //
 var pipe = BigPipe.createServer(port, {
-  pages: __dirname +'/pages',
-  dist: __dirname +'/dist',
+  pages: path.join(__dirname, 'pages'),
+  dist: path.join(__dirname, 'dist'),
   plugins: [ layout ]
 });
 
