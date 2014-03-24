@@ -1,6 +1,7 @@
 'use strict';
 
 var GitHulk = require('githulk')
+  , Dynamis = require('dynamis')
   , Page = require('bigpipe').Page
   , Registry = require('npm-registry')
   , nodejitsu = require('nodejitsu-app');
@@ -8,10 +9,16 @@ var GitHulk = require('githulk')
 //
 // Get nodejitsu-app configuration and caching layer.
 //
-var Cache = nodejitsu.cache
-  , configuration = nodejitsu.config
+var configuration = nodejitsu.config
   , couchdb = configuration.get('couchdb')
   , redisConf = configuration.get('redis');
+
+//
+// If `CACHE=destroy:environment` is set, add destroy hook for the specified
+// caching layer.
+//
+if (process.env.CACHE === 'destroy:couchdb') couchdb.before = { destroy: [] };
+if (process.env.CACHE === 'destroy:redis') redisConf.before = { destroy: [] };
 
 //
 // Initialize the cache persistance layers for both CouchDB and Redis.
@@ -23,7 +30,7 @@ var cradle = new (require('cradle')).Connection(couchdb)
 // Initialize GitHulk and provide a CouchDB cache layer.
 //
 var githulk = new GitHulk({
-  cache: new Cache('cradle', cradle, couchdb),
+  cache: new Dynamis('cradle', cradle, couchdb),
   token: configuration.get('github')
 });
 
@@ -58,7 +65,7 @@ Page.extend({
     }),
 
     package: require('packages-pagelet').extend({
-      cache: new Cache('redis', redis, redisConf),
+      cache: new Dynamis('redis', redis, redisConf),
       githulk: githulk,
       registry: registry
     }),
