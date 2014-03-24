@@ -66,8 +66,8 @@ Page.extend({
 
     package: require('packages-pagelet').extend({
       cache: new Dynamis('redis', redis, redisConf),
-      githulk: githulk,
-      registry: registry
+      registry: registry,
+      githulk: githulk
     }),
 
     //footer: require('../contour').footer
