@@ -14,13 +14,6 @@ var configuration = nodejitsu.config
   , redisConf = configuration.get('redis');
 
 //
-// If `CACHE=destroy:environment` is set, add destroy hook for the specified
-// caching layer.
-//
-if (process.env.CACHE === 'destroy:couchdb') couchdb.before = { destroy: [] };
-if (process.env.CACHE === 'destroy:redis') redisConf.before = { destroy: [] };
-
-//
 // Initialize the cache persistance layers for both CouchDB and Redis.
 //
 var cradle = new (require('cradle')).Connection(couchdb)
