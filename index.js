@@ -12,9 +12,11 @@ var path = require('path')
 var port = configuration.get('port');
 
 //
-// Initialize the layout plugina and add valid path to base layout.
+// Initialize plugins and add a valid path to base for plugin-layout.
 //
-var layout = require('bigpipe-layout');
+var watch = require('bigpipe-watch')
+  , layout = require('bigpipe-layout');
+
 layout.options = { base: path.join(__dirname, 'views', 'base.ejs') };
 
 //
@@ -23,7 +25,7 @@ layout.options = { base: path.join(__dirname, 'views', 'base.ejs') };
 var pipe = BigPipe.createServer(port, {
   pages: path.join(__dirname, 'pages'),
   dist: path.join(__dirname, 'dist'),
-  plugins: [ layout ]
+  plugins: [ layout, watch ]
 });
 
 //
