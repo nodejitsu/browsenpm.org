@@ -12,7 +12,10 @@ var Page = require('bigpipe').Page
 var couchdb = nodejitsu.config.get('couchdb')
   , cradle = new (require('cradle')).Connection(couchdb)
   , collector = new Collector({
-      cache: new Dynamis('couchdb', cradle, couchdb)
+      cache: new Dynamis('cradle', cradle, couchdb),
+      probes: [
+        Collector.probes.ping
+      ]
     });
 
 //
@@ -37,7 +40,9 @@ Page.extend({
       }
     }),
 
-    status: require('registry-status-pagelet')
+    status: require('registry-status-pagelet').extend({
+      collector: collector
+    })
 
     //footer: contour.footer
   }
