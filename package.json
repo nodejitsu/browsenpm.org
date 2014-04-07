@@ -39,8 +39,10 @@
     "githulk": "~0.0.6",
     "nconf": "~0.6.9",
     "nodejitsu-app": "~0.4.2",
+    "npm-probe": "~0.0.2",
     "npm-registry": "~0.1.2",
     "packages-pagelet": "~0.1.0",
-    "redis": "~0.10.1"
+    "redis": "~0.10.1",
+    "registry-status-pagelet": "~0.0.0",
   }
 }
