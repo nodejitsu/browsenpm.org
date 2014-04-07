@@ -43,6 +43,6 @@
     "npm-registry": "~0.1.2",
     "packages-pagelet": "~0.1.0",
     "redis": "~0.10.1",
-    "registry-status-pagelet": "~0.0.0",
+    "registry-status-pagelet": "~0.0.0"
   }
 }
