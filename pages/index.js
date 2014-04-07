@@ -1,7 +1,19 @@
 'use strict';
 
 var Page = require('bigpipe').Page
+  , Dynamis = require('dynamis')
+  , Collector = require('npm-probe')
+  , contour = require('../contour')
   , nodejitsu = require('nodejitsu-app');
+
+//
+// Initialize our data collection instance and the CouchDB cache layer.
+//
+var couchdb = nodejitsu.config.get('couchdb')
+  , cradle = new (require('cradle')).Connection(couchdb)
+  , collector = new Collector({
+      cache: new Dynamis('couchdb', cradle, couchdb)
+    });
 
 //
 // Extend the default page.
@@ -11,7 +23,7 @@ Page.extend({
   view: '../views/index.ejs',
 
   pagelets: {
-    navigation: require('../contour').navigation.extend({
+    navigation: contour.navigation.extend({
       data: {
         base: '',
         login: false,
@@ -25,6 +37,8 @@ Page.extend({
       }
     }),
 
-    //footer: require('../contour').footer
+    status: require('registry-status-pagelet')
+
+    //footer: contour.footer
   }
 }).on(module);
