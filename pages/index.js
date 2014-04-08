@@ -14,9 +14,12 @@ var couchdb = nodejitsu.config.get('couchdb')
   , collector = new Collector({
       cache: new Dynamis('cradle', cradle, couchdb),
       probes: [
-        Collector.probes.ping
+        Collector.probes.ping,
+        Collector.probes.delta
       ]
     });
+
+collector.on('probe::error', console.error);
 
 //
 // Extend the default page.
