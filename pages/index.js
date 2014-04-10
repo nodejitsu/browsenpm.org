@@ -15,7 +15,8 @@ var couchdb = nodejitsu.config.get('couchdb')
       cache: new Dynamis('cradle', cradle, couchdb),
       probes: [
         Collector.probes.ping,
-        Collector.probes.delta
+        Collector.probes.delta,
+        Collector.probes.publish
       ]
     });
 
