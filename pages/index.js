@@ -12,6 +12,7 @@ var Page = require('bigpipe').Page
 var couchdb = nodejitsu.config.get('couchdb')
   , cradle = new (require('cradle')).Connection(couchdb)
   , collector = new Collector({
+      npm: nodejitsu.config.get('npm'),
       cache: new Dynamis('cradle', cradle, couchdb),
       probes: [
         Collector.probes.ping,
