@@ -43,6 +43,8 @@
     "npm-registry": "~0.1.7",
     "packages-pagelet": "~0.3.0",
     "redis": "~0.10.1",
-    "registry-status-pagelet": "~0.0.0"
+    "registry-status-pagelet": "~0.0.0",
+    "npm-dependencies-pagelet": "~0.0.0",
+    "handlebars": "~2.0.0-alpha.2"
   }
 }
