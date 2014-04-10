@@ -18,11 +18,6 @@ The current registry status is provided via [npm-probe]. Several probes are run 
 set intervals. The publish probe requires authentication with `npm-probe`. These
 credentials can (and are) provided to the configuration of the [npm-probe] instance.
 
-```
-username: npm-probe
-password: g1efm3D4ta
-```
-
 npm-probe is provided with a CouchDB cache instance. All data is stored in the
 database `browsenpm`.
 
