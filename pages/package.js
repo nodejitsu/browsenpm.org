@@ -59,6 +59,7 @@ Page.extend({
 
     package: require('packages-pagelet').extend({
       cache: new Dynamis('redis', redis, redisConf),
+      dependenciesPagelet: '/dependencies',
       registry: registry,
       githulk: githulk
     }),
