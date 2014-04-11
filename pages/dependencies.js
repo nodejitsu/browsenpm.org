@@ -39,8 +39,8 @@ var registry = new Registry({
 // Extend the default page.
 //
 Page.extend({
-  path: '/package/:name',
-  view: '../views/package.ejs',
+  path: '/dependencies/:name',
+  view: '../views/dependencies.ejs',
 
   pagelets: {
     navigation: require('../contour').navigation.extend({
@@ -57,9 +57,8 @@ Page.extend({
       }
     }),
 
-    package: require('packages-pagelet').extend({
+    package: require('npm-dependencies-pagelet').extend({
       cache: new Dynamis('redis', redis, redisConf),
-      dependenciesPagelet: '/dependencies',
       registry: registry,
       githulk: githulk
     }),
