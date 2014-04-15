@@ -17,11 +17,27 @@ npm install --reg https://us.registry.nodejitsu.com/ --strict-ssl=false
 CouchDB will be used to cache all the data of [npm-probe]. The following views
 should be available on the database to ensure the pagelet can fetch the data.
 
-#### results/ping
+#### _design/results/_view/ping
 
 ```js
 function(doc) {
   if (doc.name === 'ping') emit([doc.start, doc.registry], doc.results);
+}
+```
+
+#### _design/results/_list/byRegistry
+
+``` js
+function(doc, req) {
+  provides('json', function() {
+    var result = {};
+    while (row = getRow()) {
+      var name = row.key[0]
+      result[name] = result[name] || [];
+      result[name].push(row.value);
+    }
+    send(JSON.stringify(result));
+  });
 }
 ```
 
