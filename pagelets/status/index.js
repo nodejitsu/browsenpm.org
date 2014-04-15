@@ -50,11 +50,27 @@ module.exports = pagelet.extend({
   get: function get(done) {
     var status = this;
 
-    cradle.view('results/ping', function query(error, results) {
+    this.list(function list(error, cache) {
       if (error) return done(error);
 
-      status.ping = results;
+      status.ping = cache;
       done(null, status);
     });
+  },
+
+  /**
+   * List data from a view specified by name.
+   *
+   * @param {String} view Optional name of the view in CouchDB, defaults to ping.
+   * @param {Function} done Completion callback.
+   * @api private
+   */
+  list: function list(view, done) {
+    if ('function' !== typeof done) {
+      done = view;
+      view = 'ping';
+    }
+
+    cradle.list('results/byRegistry/' + view, done);
   }
 });
