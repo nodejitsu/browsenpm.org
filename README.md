@@ -12,6 +12,19 @@ sudo apt-get install redis-server couchdb
 npm install --reg https://us.registry.nodejitsu.com/ --strict-ssl=false
 ```
 
+### Database
+
+CouchDB will be used to cache all the data of [npm-probe]. The following views
+should be available on the database to ensure the pagelet can fetch the data.
+
+#### results/ping
+
+```js
+function(doc) {
+  if (doc.name === 'ping') emit([doc.start, doc.registry], doc.results);
+}
+```
+
 ### Status npm-mirrors
 
 The current registry status is provided via [npm-probe]. Several probes are run at
