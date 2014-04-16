@@ -21,7 +21,7 @@ should be available on the database to ensure the pagelet can fetch the data.
 
 ```js
 function(doc) {
-  if (doc.name === 'ping') emit([doc.start, doc.registry], doc.results);
+  if (doc.name === 'ping') emit([doc.registry, doc.start], doc.results);
 }
 ```
 
@@ -32,7 +32,7 @@ function(doc, req) {
   provides('json', function() {
     var result = {};
     while (row = getRow()) {
-      var name = row.key[0]
+      var name = row.key[0];
       result[name] = result[name] || [];
       result[name].push(row.value);
     }
