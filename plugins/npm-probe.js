@@ -5,7 +5,7 @@ var nodejitsu = require('nodejitsu-app')
   , Dynamis = require('dynamis')
   , cradle = require('cradle')
   , async = require('async')
-  , list;
+  , list, movingAverage;
 
 //
 // Initialize our data collection instance and the CouchDB cache layer.
@@ -57,6 +57,13 @@ exports.server = function server(pipe, options) {
     });
 
     //
+    // Calculate the moving average for all ping data.
+    //
+    for (var registry in cache.ping) {
+      cache.ping[registry] = movingAverage(cache.ping[registry], 5);
+    }
+
+    //
     // Store all the data inside the pipe instance.
     //
     collector.data = cache;
@@ -68,6 +75,30 @@ exports.server = function server(pipe, options) {
   //
   pipe['npm-probe'] = collector;
   collector.on('error', console.error);
+};
+
+/**
+ * Calculate the moving average for the provided data with n steps.
+ *
+ * @param {Array} data Data collection of objects.
+ * @param {Number} n Amount of steps.
+ * @return {Array} Moving average per step.
+ */
+exports.movingAverage = movingAverage = function movingAverage(data, n) {
+  return data.map(function map(probe, i, original) {
+    var result = {}
+      , k = i - n;
+
+    if (k < 0) k = 0;
+    while (++k < i) {
+      for (var data in probe) {
+        result[data] = result[data] || probe[data] / n;
+        result[data] += original[k][data] / n;
+      }
+    }
+
+    return result;
+  });
 };
 
 /**
