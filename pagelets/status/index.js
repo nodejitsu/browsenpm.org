@@ -53,8 +53,33 @@ module.exports = pagelet.extend({
     this.list(function list(error, cache) {
       if (error) return done(error);
 
-      status.ping = cache;
+      //
+      // Calculate the moving average for the pings of each registry. Use 5 steps
+      // which equals a duration of 15 minutes.
+      //
+      status.ping = {};
+      for (var registry in cache) {
+        status.ping[registry] = status.movingAverage(cache[registry], 5);
+      }
+
       done(null, status);
+    });
+  },
+
+  movingAverage: function movingAverage(data, n) {
+    return data.map(function map(probe, i, original) {
+      var result = {}
+        , k = i - n;
+
+      if (k < 0) k = 0;
+      while (++k < i) {
+        for (var data in probe) {
+          result[data] = result[data] || probe[data] / n;
+          result[data] += original[k][data] / n;
+        }
+      }
+
+      return result;
     });
   },
 
