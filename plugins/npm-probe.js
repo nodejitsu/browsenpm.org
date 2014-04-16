@@ -21,8 +21,8 @@ var collector = new Collector({
   cache: new Dynamis('cradle', couch, couchdb),
   probes: [
     Collector.probes.ping,
-    Collector.probes.delta,
-    Collector.probes.publish
+    Collector.probes.delta
+    // Collector.probes.publish // Temporary silence cause npmjs.org is catching up.
   ]
 });
 
@@ -46,6 +46,15 @@ exports.server = function server(pipe, options) {
     ping: async.apply(list, 'ping')
   }, function fetched(error, cache) {
     if (error) return;
+
+    //
+    // Listen to collector events and push data over websockets.
+    //
+    collector.on('ran::probe', function ran(error, data) {
+      if (error) return;
+
+      // mitigate events to primus
+    });
 
     //
     // Store all the data inside the pipe instance.
