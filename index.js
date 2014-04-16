@@ -15,7 +15,8 @@ var port = configuration.get('port');
 // Initialize plugins and add a valid path to base for plugin-layout.
 //
 var watch = require('bigpipe-watch')
-  , layout = require('bigpipe-layout');
+  , layout = require('bigpipe-layout')
+  , probe = require('./plugins/npm-probe');
 
 layout.options = { base: path.join(__dirname, 'views', 'base.ejs') };
 
@@ -25,7 +26,7 @@ layout.options = { base: path.join(__dirname, 'views', 'base.ejs') };
 var pipe = BigPipe.createServer(port, {
   pages: path.join(__dirname, 'pages'),
   dist: path.join(__dirname, 'dist'),
-  plugins: [ layout, watch ]
+  plugins: [ probe, layout, watch ]
 });
 
 //

@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/nodejitsu/browsenpm.org",
   "dependencies": {
+    "async": "~0.7.0",
     "bigpipe": "~0.3.0",
     "bigpipe-layout": "~0.1.0",
     "bigpipe-watch": "~0.1.0",
