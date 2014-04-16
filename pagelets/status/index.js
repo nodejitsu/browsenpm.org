@@ -1,71 +1,43 @@
 'use strict';
 
 var pagelet = require('registry-status-pagelet')
-  , nodejitsu = require('nodejitsu-app')
-  , Collector = require('npm-probe')
-  , Dynamis = require('dynamis');
-
-//
-// Initialize our data collection instance and the CouchDB cache layer.
-//
-var couchdb = nodejitsu.config.get('couchdb')
-  , cradle = new (require('cradle')).Connection(couchdb);
-
-//
-// Log any errors that are emitted from probes, these should not halt the process.
-//
-var collector = new Collector({
-  error: console.error,
-  npm: nodejitsu.config.get('npm'),
-  cache: new Dynamis('cradle', cradle, couchdb),
-  probes: [
-    Collector.probes.ping,
-    Collector.probes.delta,
-    Collector.probes.publish
-  ]
-});
-
-//
-// Select the database in CouchDB so we can query the view directly.
-//
-cradle = cradle.database(couchdb.database);
+  , nodejitsu = require('nodejitsu-app');
 
 //
 // Extend the registry status pagelet.
 //
 module.exports = pagelet.extend({
-  query: pagelet.prototype.query.concat('ping'),
-
   //
-  // Use npm-probe as data collector/provider.
+  // Reference to the data collection of npm-probe.
   //
-  collector: collector,
+  get status() {
+    return this.pipe['npm-probe'].data || {};
+  },
 
   /**
-   * Get all the data from CouchDB and add static data.
+   * Return pagelet itself to render, `query` will ensure only certain objects
+   * get added. The CouchDB data is prefetched via a plugin.
    *
    * @param {Function} done Completion callback.
    * @api public
    */
   get: function get(done) {
-    var status = this;
+    var status = this.status;
 
-    this.list(function list(error, cache) {
-      if (error) return done(error);
+    for (var registry in status.ping) {
+      status.ping[registry] = this.movingAverage(status.ping[registry], 5);
+    }
 
-      //
-      // Calculate the moving average for the pings of each registry. Use 5 steps
-      // which equals a duration of 15 minutes.
-      //
-      status.ping = {};
-      for (var registry in cache) {
-        status.ping[registry] = status.movingAverage(cache[registry], 5);
-      }
-
-      done(null, status);
-    });
+    done(null, this);
   },
 
+  /**
+   * Calculate the moving average for the provided data with n steps.
+   *
+   * @param {Array} data Data collection of objects.
+   * @param {Number} n Amount of steps.
+   * @return {Array} Moving average per step.
+   */
   movingAverage: function movingAverage(data, n) {
     return data.map(function map(probe, i, original) {
       var result = {}
@@ -81,21 +53,5 @@ module.exports = pagelet.extend({
 
       return result;
     });
-  },
-
-  /**
-   * List data from a view specified by name.
-   *
-   * @param {String} view Optional name of the view in CouchDB, defaults to ping.
-   * @param {Function} done Completion callback.
-   * @api private
-   */
-  list: function list(view, done) {
-    if ('function' !== typeof done) {
-      done = view;
-      view = 'ping';
-    }
-
-    cradle.list('results/byRegistry/' + view, done);
   }
 });
