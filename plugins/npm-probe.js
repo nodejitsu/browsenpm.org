@@ -4,8 +4,7 @@ var nodejitsu = require('nodejitsu-app')
   , Collector = require('npm-probe')
   , Dynamis = require('dynamis')
   , cradle = require('cradle')
-  , async = require('async')
-  , list, movingAverage;
+  , async = require('async');
 
 //
 // Initialize our data collection instance and the CouchDB cache layer.
@@ -20,11 +19,63 @@ var collector = new Collector({
   npm: nodejitsu.config.get('npm'),
   cache: new Dynamis('cradle', couch, couchdb),
   probes: [
-    Collector.probes.ping,
-    Collector.probes.delta
+    Collector.probes.ping
+    // Collector.probes.delta
     // Collector.probes.publish // Temporary silence cause npmjs.org is catching up.
   ]
 });
+
+/**
+ * Calculate the moving average for the provided data with n steps.
+ * Defaults to 5 steps.
+ *
+ * @param {Array} data Data collection of objects.
+ * @param {Number} n Amount of steps.
+ * @return {Array} Moving average per step.
+ */
+function movingAverage(data, n) {
+  n = n || 5;
+
+  return data.map(function map(probe, i, original) {
+    var result = {}
+      , k = i - n;
+
+    if (k < 0) k = 0;
+    while (++k < i) {
+      for (var data in probe) {
+        result[data] = result[data] || probe[data] / n;
+        result[data] += original[k][data] / n;
+      }
+    }
+
+    return result;
+  });
+}
+
+/**
+ * List data from a view specified by name.
+ *
+ * @param {String} view Optional name of the view in CouchDB, defaults to ping.
+ * @param {Function} done Completion callback.
+ * @api private
+ */
+function list(view, done) {
+  if ('function' !== typeof done) {
+    done = view;
+    view = 'ping';
+  }
+
+  couch.database(couchdb.database).list('results/byRegistry/' + view, done);
+}
+
+//
+// Method used for processing per data type.
+//
+// TODO: add methods for other data, e.g. delta and publish
+//
+var transform = {
+  ping: movingAverage
+};
 
 //
 // Plugin name.
@@ -46,27 +97,52 @@ exports.server = function server(pipe, options) {
     ping: async.apply(list, 'ping')
   }, function fetched(error, cache) {
     if (error) return;
+    var data = {};
 
     //
-    // Listen to collector events and push data over websockets.
+    // Listen to ping events and push data over websockets.
     //
-    collector.on('ran::probe', function ran(error, data) {
+    collector.on('probe::ran', function ran(error, probe) {
       if (error) return;
 
-      // mitigate events to primus
+      var type = probe.name
+        , registry = probe.registry
+        , part;
+
+      //
+      // Add probe results to cache and fetch data from the end of the cache.
+      //
+      cache[type][registry].push(probe.results);
+      part = cache[type][registry].slice(-10);
+
+      //
+      // Perform calculations and store in probe results and local data.
+      //
+      probe.results = transform[type](part).pop();
+      data[type][registry].push(probe.result);
+
+      //
+      // Write the processed data to the all websocket connections.
+      //
+      pipe.primus.write(probe);
     });
 
     //
-    // Calculate the moving average for all ping data.
+    // Process the data for each data type and all reigstries seperatly.
+    // The complete array is copied, so cache remains original.
     //
-    for (var registry in cache.ping) {
-      cache.ping[registry] = movingAverage(cache.ping[registry], 5);
+    for (var type in cache) {
+      data[type] = data[type] || {};
+
+      for (var registry in cache[type]) {
+        data[type][registry] = transform[type](cache[type][registry].slice());
+      }
     }
 
     //
     // Store all the data inside the pipe instance.
     //
-    collector.data = cache;
+    collector.data = data;
   });
 
   //
@@ -77,42 +153,8 @@ exports.server = function server(pipe, options) {
   collector.on('error', console.error);
 };
 
-/**
- * Calculate the moving average for the provided data with n steps.
- *
- * @param {Array} data Data collection of objects.
- * @param {Number} n Amount of steps.
- * @return {Array} Moving average per step.
- */
-exports.movingAverage = movingAverage = function movingAverage(data, n) {
-  return data.map(function map(probe, i, original) {
-    var result = {}
-      , k = i - n;
-
-    if (k < 0) k = 0;
-    while (++k < i) {
-      for (var data in probe) {
-        result[data] = result[data] || probe[data] / n;
-        result[data] += original[k][data] / n;
-      }
-    }
-
-    return result;
-  });
-};
-
-/**
- * List data from a view specified by name.
- *
- * @param {String} view Optional name of the view in CouchDB, defaults to ping.
- * @param {Function} done Completion callback.
- * @api private
- */
-exports.list = list = function list(view, done) {
-  if ('function' !== typeof done) {
-    done = view;
-    view = 'ping';
-  }
-
-  couch.database(couchdb.database).list('results/byRegistry/' + view, done);
-};
+//
+// Export useful functions.
+//
+exports.movingAverage = movingAverage;
+exports.list = list;
