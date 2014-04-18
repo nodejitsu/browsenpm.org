@@ -40,11 +40,10 @@ function movingAverage(data, n) {
     var result = {}
       , k = i - n;
 
-    if (k < 0) k = 0;
     while (++k < i) {
       for (var data in probe) {
         result[data] = result[data] || probe[data] / n;
-        result[data] += original[k][data] / n;
+        result[data] += original[k > 0 ? k : 0][data] / n;
       }
     }
 
@@ -119,7 +118,7 @@ exports.server = function server(pipe, options) {
       // Perform calculations and store in probe results and local data.
       //
       probe.results = transform[type](part).pop();
-      data[type][registry].push(probe.result);
+      data[type][registry].push(probe.results);
 
       //
       // Write the processed data to the all websocket connections.
