@@ -21,7 +21,7 @@ should be available on the database to ensure the pagelet can fetch the data.
 
 ```js
 function(doc) {
-  if (doc.name === 'ping') emit([doc.registry, doc.start], doc.results);
+  if (doc.name === 'ping') emit([doc.registry, doc.start], doc);
 }
 ```
 
@@ -29,7 +29,7 @@ function(doc) {
 
 ```js
 function(doc) {
-  if (doc.name === 'delta') emit([doc.registry, doc.start], doc.results);
+  if (doc.name === 'delta') emit([doc.registry, doc.start], doc);
 }
 ```
 

@@ -19,11 +19,22 @@ var collector = new Collector({
   npm: nodejitsu.config.get('npm'),
   cache: new Dynamis('cradle', couch, couchdb),
   probes: [
-    Collector.probes.ping
-    // Collector.probes.delta
+    Collector.probes.ping,
+    Collector.probes.delta
     // Collector.probes.publish // Temporary silence cause npmjs.org is catching up.
   ]
 });
+
+//
+// Define cutoffs for intervals in milliseconds.
+//
+var day = 864E8
+  , intervals = {
+      hour: day / 24,
+      day: day,
+      week: 7 * day,
+      month: 30 * day
+    };
 
 /**
  * Calculate the moving average for the provided data with n steps.
@@ -32,6 +43,7 @@ var collector = new Collector({
  * @param {Array} data Data collection of objects.
  * @param {Number} n Amount of steps.
  * @return {Array} Moving average per step.
+ * @api private
  */
 function movingAverage(data, n) {
   n = n || 5;
@@ -41,13 +53,83 @@ function movingAverage(data, n) {
       , k = i - n;
 
     while (++k < i) {
-      for (var data in probe) {
-        result[data] = result[data] || probe[data] / n;
-        result[data] += original[k > 0 ? k : 0][data] / n;
+      for (var data in probe.results) {
+        result[data] = result[data] || probe.results[data] / n;
+        result[data] += original[k > 0 ? k : 0].results[data] / n;
       }
     }
-
     return result;
+  });
+}
+
+/**
+ * Seperate time units into intervals.
+ *
+ * @param {Object} memo Container to store results in.
+ * @param {Object} probe Results from probe.
+ * @return {Object} altered memo.
+ * @api private
+ */
+function timeUnit(memo, probe) {
+  var interval = 'void';
+
+  //
+  // Return duration as string for results, if vital results are missing,
+  // assume the max interval
+  //
+  for (var i in intervals) {
+    if (!probe.results || !probe.results.lag) {
+      interval = 'month';
+      break;
+    }
+
+    //
+    // Current found interval is correct, stop processing before updating again.
+    //
+    if (probe.results.lag.mean < intervals[i]) break;
+    interval = i;
+  }
+
+  memo[interval] = memo[interval] || {
+    modules: [],
+    n: 0
+  };
+
+  //
+  // Update the occurence of the interval and add the modules for reference.
+  //
+  memo[interval].n++;
+  memo[interval].modules = memo[interval].modules.concat(probe.results.modules);
+  return memo;
+}
+
+/**
+ * Group by categorize per day, day equals the day number of the year.
+ *
+ * @param {Array} data Data collection of objects.
+ * @param {Function} categorize Determine category by mapReduce.
+ * @return {[type]}      [description]
+ */
+function groupPerDay(data, categorize) {
+  categorize = categorize || timeUnit;
+
+  var result = data.reduce(function reduce(memo, probe) {
+    var year = new Date(probe.start).getFullYear()
+      , dayn = Math.ceil((probe.start - new Date(year, 0 , 1)) / day * 1000);
+
+    memo[dayn] = memo[dayn] || {};
+    memo[dayn] = categorize(memo[dayn], probe);
+    return memo;
+  }, {});
+
+  //
+  // Return a flat array with results per day number of the year.
+  //
+  return Object.keys(result).map(function maptoarray(dayn) {
+    return {
+      t: dayn,
+      values: result[dayn]
+    };
   });
 }
 
@@ -70,10 +152,9 @@ function list(view, done) {
 //
 // Method used for processing per data type.
 //
-// TODO: add methods for other data, e.g. delta and publish
-//
 var transform = {
-  ping: movingAverage
+  ping: movingAverage,
+  delta: groupPerDay
 };
 
 //
@@ -93,9 +174,10 @@ exports.name = 'npm-probe';
  */
 exports.server = function server(pipe, options) {
   async.parallel({
-    ping: async.apply(list, 'ping')
+    ping: async.apply(list, 'ping'),
+    delta: async.apply(list, 'delta')
   }, function fetched(error, cache) {
-    if (error) return;
+    if (error) throw error;
     var data = {};
 
     //
@@ -111,7 +193,7 @@ exports.server = function server(pipe, options) {
       //
       // Add probe results to cache and fetch data from the end of the cache.
       //
-      cache[type][registry].push(probe.results);
+      cache[type][registry].push(probe);
       part = cache[type][registry].slice(-10);
 
       //
