@@ -25,6 +25,14 @@ function(doc) {
 }
 ```
 
+#### _design/results/_view/delta
+
+```js
+function(doc) {
+  if (doc.name === 'delta') emit([doc.registry, doc.start], doc.results);
+}
+```
+
 #### _design/results/_list/byRegistry
 
 ``` js
