@@ -71,7 +71,7 @@ function movingAverage(data, n) {
  * @api private
  */
 function timeUnit(memo, probe) {
-  var interval = 'void';
+  var interval;
 
   //
   // Return duration as string for results, if vital results are missing,
@@ -90,6 +90,7 @@ function timeUnit(memo, probe) {
     interval = i;
   }
 
+  if (!interval) return memo;
   memo[interval] = memo[interval] || {
     modules: [],
     n: 0
