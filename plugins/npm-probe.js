@@ -49,15 +49,19 @@ function movingAverage(data, n) {
   n = n || 5;
 
   return data.map(function map(probe, i, original) {
-    var result = {}
-      , k = i - n;
+    var k = i - n
+      , result = {
+          t: probe.start,
+          values: {}
+        };
 
     while (++k < i) {
       for (var data in probe.results) {
-        result[data] = result[data] || probe.results[data] / n;
-        result[data] += original[k > 0 ? k : 0].results[data] / n;
+        result.values[data] = result.values[data] || probe.results[data] / n;
+        result.values[data] += original[k > 0 ? k : 0].results[data] / n;
       }
     }
+
     return result;
   });
 }
@@ -189,24 +193,23 @@ exports.server = function server(pipe, options) {
 
       var type = probe.name
         , registry = probe.registry
-        , part;
+        , part = JSON.parse(JSON.stringify(probe));
 
       //
       // Add probe results to cache and fetch data from the end of the cache.
       //
       cache[type][registry].push(probe);
-      part = cache[type][registry].slice(-10);
 
       //
       // Perform calculations and store in probe results and local data.
       //
-      probe.results = transform[type](part).pop();
-      data[type][registry].push(probe.results);
+      part.results = transform[type](cache[type][registry].slice(-10)).pop();
+      data[type][registry].push(part.results);
 
       //
       // Write the processed data to the all websocket connections.
       //
-      pipe.primus.write(probe);
+      pipe.primus.write(part);
     });
 
     //
