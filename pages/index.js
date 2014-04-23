@@ -24,9 +24,7 @@ Page.extend({
         ]
       }
     }),
-
-    status: require('../pagelets/status')
-
-    //footer: contour.footer
+    status: require('../pagelets/status'),
+    search: require('npm-search-pagelet')
   }
 }).on(module);
