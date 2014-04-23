@@ -1,6 +1,7 @@
 'use strict';
 
-var nodejitsu = require('nodejitsu-app')
+var pagelet = require('registry-status-pagelet')
+  , nodejitsu = require('nodejitsu-app')
   , Collector = require('npm-probe')
   , Dynamis = require('dynamis')
   , cradle = require('cradle')
@@ -24,17 +25,6 @@ var collector = new Collector({
     // Collector.probes.publish // Temporary silence cause npmjs.org is catching up.
   ]
 });
-
-//
-// Define cutoffs for intervals in milliseconds.
-//
-var day = 864E8
-  , intervals = {
-      hour: day / 24,
-      day: day,
-      week: 7 * day,
-      month: 30 * day
-    };
 
 /**
  * Calculate the moving average for the provided data with n steps.
@@ -69,42 +59,55 @@ function movingAverage(data, n) {
 /**
  * Seperate time units into intervals.
  *
- * @param {Object} memo Container to store results in.
+ * @param {Array} memo Container to store results in.
  * @param {Object} probe Results from probe.
  * @return {Object} altered memo.
  * @api private
  */
 function timeUnit(memo, probe) {
-  var interval;
+  var position = Object.keys(pagelet.intervals)
+    , interval;
+
+  //
+  // Take corrupt data into account.
+  //
+  if (!probe.results || !probe.results.lag) interval = position[position.length - 1];
 
   //
   // Return duration as string for results, if vital results are missing,
   // assume the max interval
   //
-  for (var i in intervals) {
-    if (!probe.results || !probe.results.lag) {
-      interval = 'month';
-      break;
-    }
+  position.forEach(function each(key, i) {
+    memo[i] = memo[i] || {
+      modules: [],
+      type: key,
+      n: 0
+    };
 
     //
     // Current found interval is correct, stop processing before updating again.
     //
-    if (probe.results.lag.mean < intervals[i]) break;
-    interval = i;
-  }
+    if (interval) return;
+    if (probe.results.lag.mean <= pagelet.intervals[key]) interval = key;
+  });
 
   if (!interval) return memo;
-  memo[interval] = memo[interval] || {
-    modules: [],
-    n: 0
-  };
 
   //
   // Update the occurence of the interval and add the modules for reference.
   //
-  memo[interval].n++;
-  memo[interval].modules = memo[interval].modules.concat(probe.results.modules);
+  position = position.indexOf(interval);
+  memo[position].n++;
+
+  if (Array.isArray(probe.results.modules)) {
+    Array.prototype.push.apply(
+      memo[position].modules,
+      probe.results.modules.map(function map(module) {
+        if (!~memo[position].modules.indexOf(module)) return module;
+      })
+    );
+  }
+
   return memo;
 }
 
@@ -119,23 +122,24 @@ function groupPerDay(data, categorize) {
   categorize = categorize || timeUnit;
 
   var result = data.reduce(function reduce(memo, probe) {
-    var year = new Date(probe.start).getFullYear()
-      , dayn = Math.ceil((probe.start - new Date(year, 0 , 1)) / day * 1000);
+    var n = new Date(probe.start).setHours(0,0,0,0);
 
-    memo[dayn] = memo[dayn] || {};
-    memo[dayn] = categorize(memo[dayn], probe);
+    memo[n] = memo[n] || [];
+    memo[n] = categorize(memo[n], probe);
     return memo;
   }, {});
 
   //
   // Return a flat array with results per day number of the year.
   //
-  return Object.keys(result).map(function maptoarray(dayn) {
-    return {
-      t: dayn,
-      values: result[dayn]
-    };
-  });
+  return Object.keys(result).reduce(function maptoarray(stack, dayn) {
+    return stack.concat(result[dayn].map(function map(unit) {
+      return {
+        t: dayn,
+        values: unit
+      };
+    }));
+  }, []);
 }
 
 /**
