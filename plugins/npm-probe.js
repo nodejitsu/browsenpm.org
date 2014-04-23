@@ -66,12 +66,8 @@ function movingAverage(data, n) {
  */
 function timeUnit(memo, probe) {
   var position = Object.keys(pagelet.intervals)
-    , interval;
-
-  //
-  // Take corrupt data into account.
-  //
-  if (!probe.results || !probe.results.lag) interval = position[position.length - 1];
+    , interval
+    , days;
 
   //
   // Return duration as string for results, if vital results are missing,
@@ -81,22 +77,28 @@ function timeUnit(memo, probe) {
     memo[i] = memo[i] || {
       modules: [],
       type: key,
+      days: 0,
       n: 0
     };
 
-    //
-    // Current found interval is correct, stop processing before updating again.
-    //
-    if (interval) return;
-    if (probe.results.lag.mean <= pagelet.intervals[key]) interval = key;
-  });
+    if (probe.results && probe.results.lag) {
+      //
+      // Provide all intervals on the same day with summed hours count.
+      //
+      memo[i].days += days || probe.results.lag.mean / pagelet.day;
 
-  if (!interval) return memo;
+      //
+      // Current found interval is correct, stop processing before updating again.
+      //
+      if (interval) return;
+      if (probe.results.lag.mean <= pagelet.intervals[key]) interval = key;
+    }
+  });
 
   //
   // Update the occurence of the interval and add the modules for reference.
   //
-  position = position.indexOf(interval);
+  position = interval ? position.indexOf(interval) : position.length - 1;
   memo[position].n++;
 
   if (Array.isArray(probe.results.modules)) {
