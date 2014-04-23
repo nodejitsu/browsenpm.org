@@ -106,7 +106,7 @@ function timeUnit(memo, probe) {
       memo[position].modules,
       probe.results.modules.map(function map(module) {
         if (!~memo[position].modules.indexOf(module)) return module;
-      })
+      }).filter(Boolean)
     );
   }
 
@@ -116,32 +116,43 @@ function timeUnit(memo, probe) {
 /**
  * Group by categorize per day, day equals the day number of the year.
  *
- * @param {Array} data Data collection of objects.
  * @param {Function} categorize Determine category by mapReduce.
- * @return {[type]}      [description]
+ * @return {Function} Runs the actual grouping.
  */
-function groupPerDay(data, categorize) {
-  categorize = categorize || timeUnit;
+function groupPerDay(categorize) {
+  return function execute(data) {
+    var result = data.reduce(function reduce(memo, probe) {
+      var n = new Date(probe.start).setHours(0,0,0,0);
 
-  var result = data.reduce(function reduce(memo, probe) {
-    var n = new Date(probe.start).setHours(0,0,0,0);
+      memo[n] = memo[n] || [];
+      memo[n] = categorize(memo[n], probe);
+      return memo;
+    }, {});
 
-    memo[n] = memo[n] || [];
-    memo[n] = categorize(memo[n], probe);
-    return memo;
-  }, {});
+    //
+    // Return a flat array with results per day number of the year.
+    //
+    return Object.keys(result).reduce(function maptoarray(stack, dayn) {
+      return stack.concat(result[dayn].map(function map(unit) {
+        return {
+          t: dayn,
+          values: unit
+        };
+      }));
+    }, []);
+  };
+}
 
-  //
-  // Return a flat array with results per day number of the year.
-  //
-  return Object.keys(result).reduce(function maptoarray(stack, dayn) {
-    return stack.concat(result[dayn].map(function map(unit) {
-      return {
-        t: dayn,
-        values: unit
-      };
-    }));
-  }, []);
+/**
+ * Calculate percentage of completed publishes
+ *
+ * @param {Array} memo Container to store results in.
+ * @param {Object} probe Results from probe.
+ * @return {Object} altered memo.
+ * @api private
+ */
+function percentage(memo, probe) {
+  return memo;
 }
 
 /**
@@ -165,7 +176,8 @@ function list(view, done) {
 //
 var transform = {
   ping: movingAverage,
-  delta: groupPerDay
+  delta: groupPerDay(timeUnit),
+  publish: groupPerDay(percentage)
 };
 
 //
@@ -187,8 +199,9 @@ exports.server = function server(pipe, options) {
   async.parallel({
     ping: async.apply(list, 'ping'),
     delta: async.apply(list, 'delta')
+   // publish: async.apply(list, 'publish')
   }, function fetched(error, cache) {
-    if (error) throw error;
+    if (error) throw new Error(error.message ? error.message : JSON.stringify(error));
     var data = {};
 
     //

@@ -34,6 +34,14 @@ function(doc) {
 }
 ```
 
+#### _design/results/_view/publish
+
+```js
+function(doc) {
+  if (doc.name === 'publish') emit([doc.registry, doc.start], doc);
+}
+```
+
 #### _design/results/_list/byRegistry
 
 ``` js
