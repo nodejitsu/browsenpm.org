@@ -169,6 +169,11 @@ function percentage(memo, probe) {
 
   memo[state].n++;
   memo[state].percentage = Math.round(memo[state].n / memo[state].total * 100);
+
+  //
+  // Store the success percentage on failure to start appropriate
+  //
+  memo[0].lower = memo[1].percentage;
   return memo;
 }
 
@@ -197,8 +202,8 @@ var transform = {
     return { modules: [], type: key, days: 0, n: 0 };
   })),
   publish: groupPerDay(percentage, [
-    { type: 'failure', percentage: 0, total: 0, n: 0 },
-    { type: 'success', percentage: 0, total: 0, n: 0 }
+    { type: 'failure', percentage: 0, total: 0, n: 0, lower: 0 },
+    { type: 'success', percentage: 0, total: 0, n: 0, lower: 0 }
   ])
 };
 
