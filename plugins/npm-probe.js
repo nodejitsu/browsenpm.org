@@ -21,10 +21,21 @@ var collector = new Collector({
   cache: new Dynamis('cradle', couch, couchdb),
   probes: [
     Collector.probes.ping,
-    Collector.probes.delta
-    // Collector.probes.publish // Temporary silence cause npmjs.org is catching up.
+    Collector.probes.delta,
+    Collector.probes.publish
   ]
 });
+
+/**
+ * Basic cloning functionality to prevent mixing of results.
+ *
+ * @param {Mixed} input Object to clone.
+ * @return {Mixed} cloned input
+ * @api private
+ */
+function clone(input) {
+  return JSON.parse(JSON.stringify(input));
+}
 
 /**
  * Calculate the moving average for the provided data with n steps.
@@ -70,17 +81,9 @@ function timeUnit(memo, probe) {
     , days;
 
   //
-  // Return duration as string for results, if vital results are missing,
-  // assume the max interval
+  // Return duration as string for results.
   //
   position.forEach(function each(key, i) {
-    memo[i] = memo[i] || {
-      modules: [],
-      type: key,
-      days: 0,
-      n: 0
-    };
-
     if (probe.results && probe.results.lag) {
       //
       // Provide all intervals on the same day with summed hours count.
@@ -91,21 +94,21 @@ function timeUnit(memo, probe) {
       // Current found interval is correct, stop processing before updating again.
       //
       if (interval) return;
-      if (probe.results.lag.mean <= pagelet.intervals[key]) interval = key;
+      if (probe.results.lag.mean <= pagelet.intervals[key]) interval = i;
     }
   });
 
   //
   // Update the occurence of the interval and add the modules for reference.
   //
-  position = interval ? position.indexOf(interval) : position.length - 1;
-  memo[position].n++;
+  if (!interval) interval = position.length - 1;
+  memo[interval].n++;
 
   if (Array.isArray(probe.results.modules)) {
     Array.prototype.push.apply(
-      memo[position].modules,
+      memo[interval].modules,
       probe.results.modules.map(function map(module) {
-        if (!~memo[position].modules.indexOf(module)) return module;
+        if (!~memo[interval].modules.indexOf(module)) return module;
       }).filter(Boolean)
     );
   }
@@ -119,12 +122,12 @@ function timeUnit(memo, probe) {
  * @param {Function} categorize Determine category by mapReduce.
  * @return {Function} Runs the actual grouping.
  */
-function groupPerDay(categorize) {
+function groupPerDay(categorize, base) {
   return function execute(data) {
     var result = data.reduce(function reduce(memo, probe) {
       var n = new Date(probe.start).setHours(0,0,0,0);
 
-      memo[n] = memo[n] || [];
+      memo[n] = memo[n] || clone(base);
       memo[n] = categorize(memo[n], probe);
       return memo;
     }, {});
@@ -144,7 +147,7 @@ function groupPerDay(categorize) {
 }
 
 /**
- * Calculate percentage of completed publishes
+ * Calculate percentage of completed publishes per day.
  *
  * @param {Array} memo Container to store results in.
  * @param {Object} probe Results from probe.
@@ -152,6 +155,22 @@ function groupPerDay(categorize) {
  * @api private
  */
 function percentage(memo, probe) {
+  var day = new Date().setHours(0, 0, 0, 0)
+    , diff = probe.start > day ? probe.start - day : pagelet.intervals.day
+    , done = Math.floor(diff / Collector.probes.publish.interval)
+    , state = +probe.results.published;
+
+  //
+  // d3 will expect two values (e.g. success and failure rate) per day,
+  // keep track of the latest publish probe state on both stacks.
+  //
+  if (done > memo[state].total) {
+    memo[0].total = memo[1].total = done;
+    memo[0].status = memo[1].status = probe.results.published;
+  }
+
+  memo[state].n++;
+  memo[state].percentage = Math.round(memo[state].n / memo[state].total * 100);
   return memo;
 }
 
@@ -176,8 +195,13 @@ function list(view, done) {
 //
 var transform = {
   ping: movingAverage,
-  delta: groupPerDay(timeUnit),
-  publish: groupPerDay(percentage)
+  delta: groupPerDay(timeUnit, Object.keys(pagelet.intervals).map(function map(key) {
+    return { modules: [], type: key, days: 0, n: 0 };
+  })),
+  publish: groupPerDay(percentage, [
+    { type: 'failure', percentage: 0, total: 0, n: 0 },
+    { type: 'success', percentage: 0, total: 0, n: 0 }
+  ])
 };
 
 //
@@ -198,8 +222,8 @@ exports.name = 'npm-probe';
 exports.server = function server(pipe, options) {
   async.parallel({
     ping: async.apply(list, 'ping'),
-    delta: async.apply(list, 'delta')
-   // publish: async.apply(list, 'publish')
+    delta: async.apply(list, 'delta'),
+    publish: async.apply(list, 'publish')
   }, function fetched(error, cache) {
     if (error) throw new Error(error.message ? error.message : JSON.stringify(error));
     var data = {};
@@ -212,7 +236,7 @@ exports.server = function server(pipe, options) {
 
       var type = probe.name
         , registry = probe.registry
-        , part = JSON.parse(JSON.stringify(probe));
+        , part = clone(probe);
 
       //
       // Add probe results to cache and fetch data from the end of the cache.
