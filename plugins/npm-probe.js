@@ -41,30 +41,31 @@ function clone(input) {
  * Calculate the moving average for the provided data with n steps.
  * Defaults to 5 steps.
  *
- * @param {Array} data Data collection of objects.
  * @param {Number} n Amount of steps.
  * @return {Array} Moving average per step.
  * @api private
  */
-function movingAverage(data, n) {
+function movingAverage(n) {
   n = n || 5;
 
-  return data.map(function map(probe, i, original) {
-    var k = i - n
-      , result = {
-          t: probe.start,
-          values: {}
-        };
+  return function execute(data) {
+    return data.map(function map(probe, i, original) {
+      var k = i - n
+        , result = {
+            t: probe.start,
+            values: {}
+          };
 
-    while (++k < i) {
-      for (var data in probe.results) {
-        result.values[data] = result.values[data] || probe.results[data] / n;
-        result.values[data] += original[k > 0 ? k : 0].results[data] / n;
+      while (++k < i) {
+        for (var data in probe.results) {
+          result.values[data] = result.values[data] || probe.results[data] / n;
+          result.values[data] += original[k > 0 ? k : 0].results[data] / n;
+        }
       }
-    }
 
-    return result;
-  });
+      return result;
+    });
+  };
 }
 
 /**
@@ -164,10 +165,7 @@ function percentage(memo, probe) {
   // d3 will expect two values (e.g. success and failure rate) per day,
   // keep track of the latest publish probe state on both stacks.
   //
-  if (done > memo[state].total) {
-    memo[0].total = memo[1].total = done;
-    memo[0].status = memo[1].status = probe.results.published;
-  }
+  if (done > memo[state].total) memo[0].total = memo[1].total = done;
 
   memo[state].n++;
   memo[state].percentage = Math.round(memo[state].n / memo[state].total * 100);
@@ -194,7 +192,7 @@ function list(view, done) {
 // Method used for processing per data type.
 //
 var transform = {
-  ping: movingAverage,
+  ping: movingAverage(3),
   delta: groupPerDay(timeUnit, Object.keys(pagelet.intervals).map(function map(key) {
     return { modules: [], type: key, days: 0, n: 0 };
   })),
