@@ -12,5 +12,12 @@ module.exports = pagelet.extend({
   //
   get status() {
     return this.pipe['npm-probe'].data || {};
+  },
+
+  //
+  // Reference to latest measurement data.
+  //
+  get latest() {
+    return this.pipe['npm-probe'].latest || {};
   }
 });

@@ -84,9 +84,10 @@ exports.server = function server(pipe, options) {
     //
     for (var type in cache) {
       data[type] = data[type] || {};
+      latest[type] = latest[type] || {};
 
       for (var registry in cache[type]) {
-        data[type][registry] = collector.data(
+        data[type][registry] = collector.run(
           'transform',
           type,
           cache[type][registry].slice()
@@ -95,7 +96,7 @@ exports.server = function server(pipe, options) {
         //
         // Add specific content for the most recent measurement.
         //
-        latest[type][registry] = collector.data(
+        latest[type][registry] = collector.run(
           'latest',
           type,
           data[type][registry],
