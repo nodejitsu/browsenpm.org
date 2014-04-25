@@ -11,7 +11,8 @@ var pagelet = require('registry-status-pagelet')
 // Initialize our data collection instance and the CouchDB cache layer.
 //
 var couchdb = nodejitsu.config.get('couchdb')
-  , couch = new cradle.Connection(couchdb);
+  , couch = new cradle.Connection(couchdb)
+  , intervals = pagelet.config.intervals;
 
 //
 // Create new npm-probe instance.
@@ -77,7 +78,7 @@ function movingAverage(n) {
  * @api private
  */
 function timeUnit(memo, probe) {
-  var position = Object.keys(pagelet.intervals)
+  var position = Object.keys(intervals)
     , interval
     , days;
 
@@ -85,18 +86,18 @@ function timeUnit(memo, probe) {
   // Return duration as string for results.
   //
   position.forEach(function each(key, i) {
-    if (probe.results && probe.results.lag) {
-      //
-      // Provide all intervals on the same day with summed hours count.
-      //
-      memo[i].days += days || probe.results.lag.mean / pagelet.day;
+    if (!probe.results || !probe.results.lag) return;
 
-      //
-      // Current found interval is correct, stop processing before updating again.
-      //
-      if (interval) return;
-      if (probe.results.lag.mean <= pagelet.intervals[key]) interval = i;
-    }
+    //
+    // Provide all intervals on the same day with summed hours count.
+    //
+    memo[i].days += days || probe.results.lag.mean / pagelet.config.day;
+
+    //
+    // Current found interval is correct, stop processing before updating again.
+    //
+    if (interval) return;
+    if (probe.results.lag.mean <= intervals[key]) interval = i;
   });
 
   //
@@ -157,7 +158,7 @@ function groupPerDay(categorize, base) {
  */
 function percentage(memo, probe) {
   var day = new Date().setHours(0, 0, 0, 0)
-    , diff = probe.start > day ? probe.start - day : pagelet.intervals.day
+    , diff = probe.start > day ? probe.start - day : intervals.day
     , done = Math.floor(diff / Collector.probes.publish.interval)
     , state = +probe.results.published;
 
@@ -171,7 +172,7 @@ function percentage(memo, probe) {
   memo[state].percentage = Math.round(memo[state].n / memo[state].total * 100);
 
   //
-  // Store the success percentage on failure to start appropriate
+  // Store the success percentage on failure to set lower bound.
   //
   memo[0].lower = memo[1].percentage;
   return memo;
@@ -198,7 +199,7 @@ function list(view, done) {
 //
 var transform = {
   ping: movingAverage(3),
-  delta: groupPerDay(timeUnit, Object.keys(pagelet.intervals).map(function map(key) {
+  delta: groupPerDay(timeUnit, Object.keys(intervals).map(function map(key) {
     return { modules: [], type: key, days: 0, n: 0 };
   })),
   publish: groupPerDay(percentage, [
@@ -283,9 +284,3 @@ exports.server = function server(pipe, options) {
   pipe['npm-probe'] = collector;
   collector.on('error', console.error);
 };
-
-//
-// Export useful functions.
-//
-exports.movingAverage = movingAverage;
-exports.list = list;
