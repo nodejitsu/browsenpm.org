@@ -48,7 +48,8 @@ exports.server = function server(pipe, options) {
     publish: async.apply(list, 'publish')
   }, function fetched(error, cache) {
     if (error) throw new Error(error.message ? error.message : JSON.stringify(error));
-    var data = {};
+    var data = {}
+      , latest = {};
 
     //
     // Listen to ping events and push data over websockets.
@@ -85,7 +86,21 @@ exports.server = function server(pipe, options) {
       data[type] = data[type] || {};
 
       for (var registry in cache[type]) {
-        data[type][registry] = collector.transform(type)(cache[type][registry].slice());
+        data[type][registry] = collector.data(
+          'transform',
+          type,
+          cache[type][registry].slice()
+        );
+
+        //
+        // Add specific content for the most recent measurement.
+        //
+        latest[type][registry] = collector.data(
+          'latest',
+          type,
+          data[type][registry],
+          cache[type][registry]
+        );
       }
     }
 
@@ -93,6 +108,7 @@ exports.server = function server(pipe, options) {
     // Store all the data inside the pipe instance.
     //
     collector.data = data;
+    collector.latest = latest;
   });
 
   //
