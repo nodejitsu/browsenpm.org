@@ -66,18 +66,21 @@ following blob as source of the document:
 
 ```js
 {
-   "_id": "_design/results",
-   "views": {
-       "ping": {
-           "map": "function(doc) { if (doc.name === 'ping') emit([doc.registry, doc.start], doc);}"
-       },
-       "delta": {
-           "map": "function(doc) { if (doc.name === 'delta') emit([doc.registry, doc.start], doc); }"
-       }
-   },
-   "lists": {
-       "byRegistry": "function(doc, req) { provides('json', function() { var result = {}; while (row = getRow()) {       var name = row.key[0]; result[name] = result[name] || []; result[name].push(row.value); } send(JSON.stringify(result));   }); }"
-   }
+  "_id": "_design/results",
+  "views": {
+    "delta": {
+      "map": "function(doc) { if (doc.name === 'delta') emit([doc.registry, doc.start], doc); }"
+    },
+    "ping": {
+      "map": "function(doc) { if (doc.name === 'ping') emit([doc.registry, doc.start], doc);}"
+    },
+    "publish": {
+      "map": "function(doc) { if (doc.name === 'publish') emit([doc.registry, doc.start], doc);}"
+    }
+  },
+  "lists": {
+    "byRegistry": "function(doc, req) { provides('json', function() { var result = {}; while (row = getRow()) { var name = row.key[0]; result[name] = result[name] || []; result[name].push(row.value); } send(JSON.stringify(result));   }); }"
+  }
 }
 ```
 
