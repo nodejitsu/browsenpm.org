@@ -47,6 +47,7 @@
     "registry-status-pagelet": "~0.0.0",
     "npm-dependencies-pagelet": "~0.1.0",
     "npm-search-pagelet": "~0.0.0",
-    "handlebars": "~2.0.0-alpha.2"
+    "handlebars": "~2.0.0-alpha.2",
+    "npm-documentation-pagelet": "^0.2.0"
   }
 }
