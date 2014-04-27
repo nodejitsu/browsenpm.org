@@ -20,6 +20,7 @@ Page.extend({
           { name: 'Explore', href: '/' },
           // { name: 'Packages', href: '/packages/' },
           // { name: 'Authors', href: '/authors/' },
+          { name: 'Node.js', href: 'http://nodejs.org', target: 'blank' },
           { name: 'Help', href: '/help/' }
         ]
       }
