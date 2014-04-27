@@ -17,10 +17,10 @@ Page.extend({
         login: false,
         signup: false,
         navigation: [
-          { name: 'Recent', href: '/recent/' },
-          { name: 'Packages', href: '/packages/' },
-          { name: 'Authors', href: '/authors/' },
-          { name: 'Help', href: '/help/' },
+          { name: 'Explore', href: '/' },
+          // { name: 'Packages', href: '/packages/' },
+          // { name: 'Authors', href: '/authors/' },
+          { name: 'Help', href: '/help/' }
         ]
       }
     }),
