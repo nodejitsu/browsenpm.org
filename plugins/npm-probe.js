@@ -35,90 +35,116 @@ exports.name = 'npm-probe';
  * Server side plugin to prefetch cache and to connect primus to npm-probe
  * instance via listeners.
  *
- * TODO: prefetching cached data is async and potentially creates an ambigious state
- *
  * @param {Pipe} bigpipe instance
  * @param {Object} options
  * @api public
  */
 exports.server = function server(pipe, options) {
-  async.parallel({
-    ping: async.apply(list, 'ping'),
-    delta: async.apply(list, 'delta'),
-    publish: async.apply(list, 'publish')
-  }, function fetched(error, cache) {
-    if (error) throw new Error(error.message ? error.message : JSON.stringify(error));
-    var data = {}
-      , latest = {};
+  prepare(function prepped(error) {
+    if (error) throw error;
 
-    //
-    // Listen to ping events and push data over websockets.
-    //
-    collector.on('item::ran', function ran(error, item) {
-      if (error) return;
-
-      var type = item.name
-        , registry = item.registry
-        , part = collector.clone(item);
+    async.parallel({
+      ping: async.apply(list, 'ping'),
+      delta: async.apply(list, 'delta'),
+      publish: async.apply(list, 'publish')
+    }, function fetched(error, cache) {
+      if (error) throw new Error(error.stack ? error.stack : JSON.stringify(error));
+      var data = {}
+        , latest = {};
 
       //
-      // Add item results to cache and fetch data from the end of the cache.
+      // Listen to ping events and push data over websockets.
       //
-      cache[type][registry].push(item);
+      collector.on('item::ran', function ran(error, item) {
+        if (error) return;
+
+        var type = item.name
+          , registry = item.registry
+          , part = collector.clone(item);
+
+        //
+        // Add item results to cache and fetch data from the end of the cache.
+        //
+        cache[type][registry].push(item);
+
+        //
+        // Perform calculations and store in item results and local data.
+        //
+        part.results = collector.transform(type)(cache[type][registry].slice(-10)).pop();
+        data[type][registry].push(part.results);
+
+        //
+        // Write the processed data to the all websocket connections.
+        //
+        pipe.primus.write(part);
+      });
 
       //
-      // Perform calculations and store in item results and local data.
+      // Process the data for each data type and all reigstries seperatly.
+      // The complete array is copied, so cache remains original.
       //
-      part.results = collector.transform(type)(cache[type][registry].slice(-10)).pop();
-      data[type][registry].push(part.results);
+      for (var type in cache) {
+        data[type] = data[type] || {};
+        latest[type] = latest[type] || {};
+
+        for (var registry in cache[type]) {
+          data[type][registry] = collector.run(
+            'transform',
+            type,
+            cache[type][registry].slice() // TODO check if slice is still required.
+          );
+
+          //
+          // Add specific content for the most recent measurement.
+          //
+          latest[type][registry] = collector.run(
+            'latest',
+            type,
+            data[type][registry],
+            cache[type][registry]
+          );
+        }
+      }
 
       //
-      // Write the processed data to the all websocket connections.
+      // Store all the data inside the pipe instance.
       //
-      pipe.primus.write(part);
+      collector.data = data;
+      collector.latest = latest;
     });
 
     //
-    // Process the data for each data type and all reigstries seperatly.
-    // The complete array is copied, so cache remains original.
+    // Keep reference to the npm-probe instance inside BigPipe, errors will be
+    // send to stderr.
     //
-    for (var type in cache) {
-      data[type] = data[type] || {};
-      latest[type] = latest[type] || {};
-
-      for (var registry in cache[type]) {
-        data[type][registry] = collector.run(
-          'transform',
-          type,
-          cache[type][registry].slice()
-        );
-
-        //
-        // Add specific content for the most recent measurement.
-        //
-        latest[type][registry] = collector.run(
-          'latest',
-          type,
-          data[type][registry],
-          cache[type][registry]
-        );
-      }
-    }
-
-    //
-    // Store all the data inside the pipe instance.
-    //
-    collector.data = data;
-    collector.latest = latest;
+    pipe['npm-probe'] = collector;
+    collector.on('error', console.error);
   });
-
-  //
-  // Keep reference to the npm-probe instance inside BigPipe, errors will be
-  // send to stderr.
-  //
-  pipe['npm-probe'] = collector;
-  collector.on('error', console.error);
 };
+
+/**
+ * Prepare the views in CouchDB if not present.
+ *
+ * @param {Function} done Completion callback
+ * @api private
+ */
+function prepare(done) {
+  var setup = require('./couchdb')
+    , id = setup._id;
+
+  couch = couch.database(couchdb.database);
+  couch.get(id, function exists(error, doc) {
+    if (error && error.reason === 'missing') return couch.save(id, setup, done);
+
+    //
+    // Check if the current design document is up to date.
+    //
+    delete doc._rev;
+    if (JSON.stringify(doc) !== JSON.stringify(setup)) couch.save(id, setup, done);
+
+    done(error);
+  });
+}
 
 /**
  * List data from a view specified by name.
@@ -133,5 +159,5 @@ function list(view, done) {
     view = 'ping';
   }
 
-  couch.database(couchdb.database).list('results/byRegistry/' + view, done);
+  couch.list('results/byRegistry/' + view, done);
 }
