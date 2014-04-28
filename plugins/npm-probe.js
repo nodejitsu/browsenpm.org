@@ -134,7 +134,8 @@ function prepare(done) {
 
   couch = couch.database(couchdb.database);
   couch.get(id, function exists(error, doc) {
-    if (error && error.reason === 'missing') return couch.save(id, setup, done);
+    if (error && error.error === 'not_found') return couch.save(id, setup, done);
+    if (error) return done(new Error(JSON.stringify(error)));
 
     //
     // Check if the current design document is up to date.
