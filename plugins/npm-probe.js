@@ -142,7 +142,9 @@ function prepare(done) {
     // Check if the current design document is up to date.
     //
     delete doc._rev;
-    if (JSON.stringify(doc) !== JSON.stringify(setup)) couch.save(id, setup, done);
+    if (JSON.stringify(doc) !== JSON.stringify(setup)) {
+      return couch.save(id, setup, done);
+    }
 
     done(error);
   });
