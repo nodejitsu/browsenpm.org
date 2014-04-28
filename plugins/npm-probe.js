@@ -53,8 +53,8 @@ exports.server = function server(pipe, options) {
       //
       // Listen to ping events and push data over websockets.
       //
-      collector.on('item::ran', function ran(error, item) {
-        if (error) return;
+      collector.on('probe::ran', function ran(error, item) {
+        if (error) return console.error(error);
 
         var type = item.name
           , registry = item.registry
@@ -68,13 +68,30 @@ exports.server = function server(pipe, options) {
         //
         // Perform calculations and store in item results and local data.
         //
-        part.results = collector.transform(type)(cache[type][registry].slice(-10)).pop();
+        part.results = collector.run(
+          'transform',
+          type,
+          cache[type][registry].slice(-10)
+        ).pop();
+
+        //
+        // Let the probe return its decorated latest value.
+        //
         data[type][registry].push(part.results);
+        latest[type][registry] = collector.run(
+          'latest',
+          type,
+          data[type][registry],
+          cache[type][registry]
+        );
 
         //
         // Write the processed data to the all websocket connections.
         //
-        pipe.primus.write(part);
+        pipe.primus.write({
+          data: part,
+          latest: latest[type][registry]
+        });
       });
 
       //
