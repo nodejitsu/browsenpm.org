@@ -107,10 +107,11 @@ exports.server = function server(pipe, options) {
       }
 
       //
-      // Store all the data inside the pipe instance.
+      // Store all the data inside the pipe instance. Clone the latest to prevent
+      // circular data references.
       //
       collector.data = data;
-      collector.latest = latest;
+      collector.latest = collector.clone(latest);
     });
 
     //
