@@ -2,7 +2,7 @@
 
 var GitHulk = require('githulk')
   , Dynamis = require('dynamis')
-  , Page = require('bigpipe').Page
+  , Page = require('../base').Page
   , Registry = require('npm-registry')
   , nodejitsu = require('nodejitsu-app');
 
@@ -43,20 +43,7 @@ Page.extend({
   view: '../views/dependencies.ejs',
 
   pagelets: {
-    navigation: require('../contour').navigation.extend({
-      data: {
-        base: '',
-        login: false,
-        signup: false,
-        navigation: [
-          { name: 'Recent', href: '/recent/' },
-          { name: 'Packages', href: '/packages/' },
-          { name: 'Authors', href: '/authors/' },
-          { name: 'Help', href: '/help/' },
-        ]
-      }
-    }),
-
+    navigation: require('../pagelets/navigation'),
     package: require('npm-dependencies-pagelet').extend({
       cache: new Dynamis('redis', redis, redisConf),
       registry: registry,
