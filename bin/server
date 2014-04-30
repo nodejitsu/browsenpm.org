@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+'use strict';
+
+if (!/\.10\./.test(process.version)) {
+  return console.error('Must run on node 0.10.x');
+}
+
+require('../index');

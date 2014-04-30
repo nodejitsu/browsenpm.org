@@ -7,13 +7,25 @@ Browse packages, users, code, stats and more the public npm registry in style.
 
 Browsenpm.org has several dependencies to run locally for development purposes.
 
-```
+```bash
 sudo apt-get install redis-server couchdb
 npm install
 ```
 
 After update the configuration in `browsenpm.config.json` and provide the details
 needed. Note that your database might require authentication credentials.
+
+### Running
+
+```bash
+npm start
+
+# Or run the server by specifying a configuration file.
+bin/server -c config.dev.json
+```
+
+Providing a custom configuration is optional. By default `browsenpm.config.json`
+will be used.
 
 ### Database
 
@@ -41,7 +53,7 @@ database `browsenpm`.
 During development it might be useful to destroy cached data, simply set any of the
 following environment variables to flush cache.
 
-```
+```bash
 CACHE=flush:redis
 CACHE=flush:couchdb
 ```
