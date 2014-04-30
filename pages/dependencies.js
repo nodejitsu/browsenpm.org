@@ -4,14 +4,13 @@ var GitHulk = require('githulk')
   , Dynamis = require('dynamis')
   , Page = require('../base').Page
   , Registry = require('npm-registry')
-  , nodejitsu = require('nodejitsu-app');
+  , config = require('../config');
 
 //
-// Get nodejitsu-app configuration and caching layer.
+// Get configurations.
 //
-var configuration = nodejitsu.config
-  , couchdb = configuration.get('couchdb')
-  , redisConf = configuration.get('redis');
+var couchdb = config.get('couchdb')
+  , redisConf = config.get('redis');
 
 //
 // Initialize the cache persistance layers for both CouchDB and Redis.
@@ -24,7 +23,7 @@ var cradle = new (require('cradle')).Connection(couchdb)
 //
 var githulk = new GitHulk({
   cache: new Dynamis('cradle', cradle, couchdb),
-  token: configuration.get('github')
+  token: config.get('tokens')
 });
 
 //
@@ -32,7 +31,7 @@ var githulk = new GitHulk({
 //
 var registry = new Registry({
   githulk: githulk,
-  registry: configuration.get('registry')
+  registry: config.get('registry')
 });
 
 //

@@ -4,12 +4,12 @@ var path = require('path')
   , BigPipe = require('bigpipe')
   , connect = require('connect')
   , debug = require('debug')('browsenpm:server')
-  , configuration = require('nodejitsu-app').config;
+  , config = require('./config');
 
 //
 // Setup all the configuration
 //
-var port = configuration.get('port');
+var port = config.get('port');
 
 //
 // Initialize plugins and add a valid path to base for plugin-layout.

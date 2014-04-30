@@ -9,10 +9,16 @@ Browsenpm.org has several dependencies to run locally for development purposes.
 
 ```
 sudo apt-get install redis-server couchdb
-npm install --reg https://us.registry.nodejitsu.com/ --strict-ssl=false
+npm install
 ```
 
+After update the configuration in `browsenpm.config.json` and provide the details
+needed. Note that your database might require authentication credentials.
+
 ### Database
+
+Both Redis and CouchDB should be running to cache data for certain pagelets. Make
+sure you run them locally or provide a server that runs either.
 
 CouchDB will be used to cache all the data of [npm-probe]. The views in
 `plugins/couchdb.json` should be available on the database to ensure the
@@ -46,7 +52,7 @@ Most components have debug statements to help debugging, shortlist:
 
 | Module    | Description | Statement               |
 | --------- | ----------- | ----------------------- |
-| bigpipe   | server      | `DEBUG=bigpipe`         |
+| bigpipe   | server      | `DEBUG=bigpipe:*`       |
 | bigpipe   | pages       | `DEBUG=bigpipe:page`    |
 | bigpipe   | pagelets    | `DEBUG=bigpipe:pagelet` |
 | npm-probe | statistics  | `DEBUG=npm-probe`       |

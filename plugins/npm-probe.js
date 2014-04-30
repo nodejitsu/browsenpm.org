@@ -1,8 +1,8 @@
 'use strict';
 
 var pagelet = require('registry-status-pagelet')
-  , nodejitsu = require('nodejitsu-app')
   , Collector = require('npm-probe')
+  , config = require('../config')
   , Dynamis = require('dynamis')
   , cradle = require('cradle')
   , async = require('async');
@@ -10,14 +10,14 @@ var pagelet = require('registry-status-pagelet')
 //
 // Initialize our data collection instance and the CouchDB cache layer.
 //
-var couchdb = nodejitsu.config.get('couchdb')
+var couchdb = config.get('couchdb')
   , couch = new cradle.Connection(couchdb);
 
 //
 // Create new npm-probe instance.
 //
 var collector = new Collector({
-  npm: nodejitsu.config.get('npm'),
+  npm: config.get('npm'),
   cache: new Dynamis('cradle', couch, couchdb),
   probes: [
     Collector.probes.ping,

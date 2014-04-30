@@ -1,7 +1,6 @@
 'use strict';
 
-var pagelet = require('registry-status-pagelet')
-  , nodejitsu = require('nodejitsu-app');
+var pagelet = require('registry-status-pagelet');
 
 //
 // Extend the registry status pagelet.
