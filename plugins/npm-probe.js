@@ -19,11 +19,9 @@ var couchdb = config.get('couchdb')
 var collector = new Collector({
   npm: config.get('npm'),
   cache: new Dynamis('cradle', couch, couchdb),
-  probes: [
-    Collector.probes.ping,
-    Collector.probes.delta,
-    Collector.probes.publish
-  ]
+  probes: config.get('probes').map(function add(name) {
+    return Collector.probes[name];
+  })
 });
 
 //
