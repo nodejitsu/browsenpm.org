@@ -62,10 +62,12 @@ CACHE=flush:couchdb
 
 Most components have debug statements to help debugging, shortlist:
 
-| Module    | Description | Statement               |
-| --------- | ----------- | ----------------------- |
-| bigpipe   | server      | `DEBUG=bigpipe:*`       |
-| bigpipe   | pages       | `DEBUG=bigpipe:page`    |
-| bigpipe   | pagelets    | `DEBUG=bigpipe:pagelet` |
-| npm-probe | statistics  | `DEBUG=npm-probe`       |
-| dynamis   | cache layer | `DEBUG=dynamis`         |
+| Module    | Description    | Statement                            |
+| --------- | -------------- | ------------------------------------ |
+| bigpipe   | all components | `DEBUG=bigpipe:*`                    |
+| bigpipe   | server         | `DEBUG=bigpipe:server`               |
+| bigpipe   | pages          | `DEBUG=bigpipe:page`                 |
+| bigpipe   | pagelets       | `DEBUG=bigpipe:pagelet`              |
+| npm-probe | statistics     | `DEBUG=npm-probe`                    |
+| dynamis   | cache layer    | `DEBUG=dynamis`                      |
+| ALL       | every module   | `DEBUG=bigpipe:*,dynamis,npm-probe`  |
