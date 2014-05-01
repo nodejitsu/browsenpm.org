@@ -12,7 +12,7 @@ sudo apt-get install redis-server couchdb
 npm install
 ```
 
-After update the configuration in `browsenpm.config.json` and provide the details
+After update the configuration in `development.json` and provide the details
 needed. Note that your database might require authentication credentials.
 
 ### Running
@@ -24,7 +24,7 @@ npm start
 bin/server -c config.dev.json
 ```
 
-Providing a custom configuration is optional. By default `browsenpm.config.json`
+Providing a custom configuration is optional. By default `development.json`
 will be used.
 
 ### Database
