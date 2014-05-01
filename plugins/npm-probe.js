@@ -39,14 +39,14 @@ exports.name = 'npm-probe';
  */
 exports.server = function server(pipe, options) {
   prepare(function prepped(error) {
-    if (error) throw error;
+    if (error) return bailout(error);
 
     async.parallel({
       ping: async.apply(list, 'ping'),
       delta: async.apply(list, 'delta'),
       publish: async.apply(list, 'publish')
     }, function fetched(error, cache) {
-      if (error) throw new Error(error.stack ? error.stack : JSON.stringify(error));
+      if (error) return bailout(error);
       var data = {}
         , latest = {};
 
@@ -122,7 +122,7 @@ exports.server = function server(pipe, options) {
 };
 
 /**
- * Prepare the views in CouchDB if not present.
+ * Prepare CouchDB.
  *
  * @param {Function} done Completion callback
  * @api private
@@ -131,20 +131,40 @@ function prepare(done) {
   var setup = require('./couchdb')
     , id = setup._id;
 
+  /**
+   * Check if design documents are present.
+   *
+   * @param {Error} error
+   * @api private
+   */
+  function design(error) {
+    if (error) return done(error);
+
+    couch.get(id, function design(error, doc) {
+      if (error && error.error === 'not_found') return couch.save(id, setup, done);
+      if (error) return done(error);
+
+      //
+      // Check if the current design document is up to date.
+      //
+      delete doc._rev;
+      if (JSON.stringify(doc) !== JSON.stringify(setup)) {
+        return couch.save(id, setup, done);
+      }
+
+      done(error);
+    });
+  }
+
   couch = couch.database(couchdb.database);
-  couch.get(id, function exists(error, doc) {
-    if (error && error.error === 'not_found') return couch.save(id, setup, done);
-    if (error) return done(new Error(JSON.stringify(error)));
+  couch.exists(function database(error, exists) {
+    if (error) return done(error);
 
     //
-    // Check if the current design document is up to date.
+    // Create the database if it does not exist otherwise continue.
     //
-    delete doc._rev;
-    if (JSON.stringify(doc) !== JSON.stringify(setup)) {
-      return couch.save(id, setup, done);
-    }
-
-    done(error);
+    if (!exists) return couch.create(design);
+    design();
   });
 }
 
@@ -162,4 +182,15 @@ function list(view, done) {
   }
 
   couch.list('results/byRegistry/' + view, done);
+}
+
+/**
+ * Simple helper function to process error objects correctly. Cradle returns objects
+ * in stead of proper Error objects.
+ *
+ * @param {Object|Error} error
+ * @api private
+ */
+function bailout(error) {
+  throw new Error(error.stack ? error.stack : JSON.stringify(error));
 }
