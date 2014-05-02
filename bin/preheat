@@ -160,6 +160,7 @@ request({
       delete details.description;
 
       //
+      // First check if the repository was moved, otherwise a 404 is returned.
       //
       githulk.repository.moved(repo, function moved(err, parsed, changed) {
         if (err) return next(null, details);
