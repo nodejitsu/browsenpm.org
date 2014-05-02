@@ -10,6 +10,7 @@ require('../base').Page.extend({
   pagelets: {
     navigation: require('../pagelets/navigation'),
     status: require('../pagelets/status'),
-    search: require('npm-search-pagelet')
+    search: require('npm-search-pagelet'),
+    footer: require('../contour').footer
   }
 }).on(module);

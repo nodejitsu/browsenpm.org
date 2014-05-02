@@ -50,6 +50,6 @@ Page.extend({
       githulk: githulk
     }),
 
-    //footer: require('../contour').footer
+    footer: require('../contour').footer
   }
 }).on(module);

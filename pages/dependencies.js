@@ -48,7 +48,6 @@ Page.extend({
       registry: registry,
       githulk: githulk
     }),
-
-    //footer: require('../contour').footer
+    footer: require('../contour').footer
   }
 }).on(module);
