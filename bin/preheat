@@ -73,29 +73,34 @@ state.on('resolve', function (list) {
       if (err) return next(err);
       key = pagelet.key(name, version);
 
+      //
+      // Check if the stuff is already in cache.
+      //
       pagelet.fireforget('get', key, function cached(err, data) {
-        if (!err && data) return next(err, data);
+        if (err) return next(err);
+        if (!err && data) return next();
 
         //
-        // No data or an error, resolve the data structure and attempt to
-        // store it again.
+        // No data or an error, resolve the data structure and store it.
         //
         pagelet.resolve(name, {
           registry: pagelet.registry,
           githulk: pagelet.githulk
         }, function resolved(err, data) {
-          //
-          // Store and forget, we should delay the rendering procedure any
-          // longer as manually resolving took to damn much time.
-          //
-          if (!err) pagelet.fireforget('set', key, data, pagelet.expire.data);
+          if (err) return next(err);
 
-          next(err, data);
+          //
+          // Store the data.
+          //
+          pagelet.fireforget('set', key, data, pagelet.expire.data, next);
         });
       });
     });
-  }, function done() {
+  }, function done(err) {
+    if (err) console.error(err);
+
     console.log('[Browsenpm.org] Finished resolving '+ list.length + ' packages');
+    process.exit();
   });
 });
 
