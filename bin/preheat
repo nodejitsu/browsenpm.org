@@ -163,6 +163,7 @@ request({
       // Save some disk space
       //
       delete details.description;
+      delete details.maintainers;
 
       //
       // First check if the repository was moved, otherwise a 404 is returned.
@@ -180,6 +181,7 @@ request({
       });
     }, function done(err, results) {
       if (err) return console.error(err);
+
       console.log([
         '[Browsenpm.org] Finished batch [',
         n - 1000,
