@@ -58,6 +58,22 @@ CACHE=flush:redis
 CACHE=flush:couchdb
 ```
 
+**Warming up**
+
+Getting data for a package page can consume a lot of resources. A small cli-tool is
+available to warm up the cache. This will consume github tokens like crazy so please
+use with caution. By default 10000 packages are resolved, use `LIMIT=n` where n is
+an integer.
+
+```
+npm run-script preheat
+```
+
+Note: supplying `FETCH=true` will download the latest available package list and sort
+all packages by github stars. This is not required by default and should only be
+done if the package list is severly outdated. This will use about 10 github token
+keys and run for about 2 hours. Make sure enough tokens are available.
+
 ### Debugging
 
 Most components have debug statements to help debugging, shortlist:
