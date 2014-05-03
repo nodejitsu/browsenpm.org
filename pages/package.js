@@ -16,7 +16,11 @@ var couchdb = config.get('couchdb')
 // Initialize the cache persistance layers for both CouchDB and Redis.
 //
 var cradle = new (require('cradle')).Connection(couchdb)
-  , redis = require('redis').createClient(redisConf.port, redisConf.host);
+  , redis = require('redis').createClient(
+      redisConf.port,
+      redisConf.host,
+      { pass_auth: redisConf.auth }
+    );
 
 //
 // Initialize GitHulk and provide a CouchDB cache layer.
