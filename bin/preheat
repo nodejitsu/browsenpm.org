@@ -147,13 +147,15 @@ request({
    *
    * @api private
    */
-  function process() {
+  function proc() {
+    var i = 0;
+
     console.log([
       '[Browsenpm.org] Processing batch [',
       n,
       ', ',
       n + 1000,
-      '] with concurrency 10'
+      '] with concurrency 10  '
     ].join(''));
 
     async.mapLimit(work.slice(n, n += 1000), 10, function map(details, next) {
@@ -175,6 +177,12 @@ request({
         githulk.repository.get(repo, function get(err, data) {
           if (err) return next(null, details);
 
+          //
+          // Keep track of how much was done
+          //
+          process.stdout.write('*');
+          if (++i % 100 === 0) process.stdout.write(' '+ i +'\n');
+
           details.stars = data[0].stargazers_count || 0;
           next(null, details);
         });
@@ -183,7 +191,7 @@ request({
       if (err) return console.error(err);
 
       console.log([
-        '[Browsenpm.org] Finished batch [',
+        '\n[Browsenpm.org] Finished batch [',
         n - 1000,
         ', ',
         n,
@@ -193,8 +201,8 @@ request({
       ].join(''));
 
       console.log([
-        '[Browsenpm.org] Githulk tokens remaining ',
-        githulk.remaining,
+        '[Browsenpm.org] Githulk ',
+        githulk.authorization,
       ].join(''));
 
       //
@@ -231,6 +239,6 @@ request({
   //
   // Start a batch each 2 minutes.
   //
-  timer = setInterval(process, interval);
-  process();
+  timer = setInterval(proc, interval);
+  proc();
 });
