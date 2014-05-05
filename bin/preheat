@@ -1,0 +1,244 @@
+#!/usr/bin/env node
+'use strict';
+
+//
+// Required modules.
+//
+var Registry = require('npm-registry')
+  , packages = require('./packages')
+  , config = require('../config')
+  , GitHulk = require('githulk')
+  , Dynamis = require('dynamis')
+  , request = require('request')
+  , async = require('async')
+  , fs = require('fs');
+
+//
+// Get configurations.
+//
+var couchdb = config.get('couchdb')
+  , redisConf = config.get('redis');
+
+//
+// Initialize the cache persistance layers for both CouchDB and Redis.
+//
+var cradle = new (require('cradle')).Connection(couchdb)
+  , redis = require('redis').createClient(redisConf.port, redisConf.host);
+
+//
+// Initialize GitHulk and provide a CouchDB cache layer.
+//
+var githulk = new GitHulk({
+  cache: new Dynamis('cradle', cradle, couchdb),
+  token: config.get('tokens')
+});
+
+//
+// Initialize Registry.
+//
+var registry = new Registry({
+  githulk: githulk,
+  registry: config.get('registry')
+});
+
+//
+// Create a fake packages pagelet so the inner workings can be re-used.
+//
+var pagelet = new (require('packages-pagelet').extend({
+  cache: new Dynamis('redis', redis, redisConf),
+  registry: registry,
+  githulk: githulk
+}).optimize());
+
+//
+// Use EventEmitter to trigger jobs.
+//
+var state = new (require('events').EventEmitter);
+
+//
+// Start the actual resolving.
+//
+state.on('resolve', function (list) {
+  list = list.slice(0, process.env.LIMIT = 1E3);
+  console.log('[Browsenpm.org] Resolving '+ list.length + ' packages');
+
+  async.eachLimit(list, 10, function map(details, next) {
+    var name = details.name
+      , key;
+
+    //
+    // First check the latest available key. This will also cache the key.
+    //
+    pagelet.latest(name, function latest(err, version) {
+      if (err) return next(err);
+      key = pagelet.key(name, version);
+
+      //
+      // Check if the stuff is already in cache.
+      //
+      pagelet.fireforget('get', key, function cached(err, data) {
+        if (err) return next(err);
+        if (!err && data) return next();
+
+        //
+        // No data or an error, resolve the data structure and store it.
+        //
+        pagelet.resolve(name, {
+          registry: pagelet.registry,
+          githulk: pagelet.githulk
+        }, function resolved(err, data) {
+          if (err) return next(err);
+
+          //
+          // Store the data.
+          //
+          pagelet.fireforget('set', key, data, pagelet.expire.data, next);
+        });
+      });
+    });
+  }, function done(err) {
+    if (err) console.error(err);
+
+    console.log('[Browsenpm.org] Finished resolving '+ list.length + ' packages');
+    process.exit();
+  });
+});
+
+//
+// No fresh data fetching required, start with local list.
+//
+if (!process.env.FETCH) return state.emit('resolve', packages);
+console.log('[Browsenpm.org] Fetching new packages list');
+
+//
+// Fetch and sort the list based on github stars, stores after.
+//
+request({
+  url: 'https://github.com/polyhack/npm-github-data/blob/master/allpackages.json?raw=true'
+}, function received(err, res, body) {
+  if (err) throw err;
+  if (res.statusCode !== 200) throw new  Error('Invalid status code');
+  if (!body || !body.length) throw new Error('No content returned');
+
+  var data = JSON.parse(body.toString())
+    , interval = 12E4
+    , list = []
+    , n = 0
+    , timer
+    , work;
+
+  //
+  // Filter out packages which do not have a known github repo, these will be
+  // last in the list.
+  //
+  console.log('[Browsenpm.org] Sorting '+ packages.length +' packages on github stars');
+
+  work = data.filter(function filter(details) {
+    var repo = details.githubUser && details.githubRepo;
+
+    if (!repo) list.push(details);
+    return repo;
+  });
+
+  console.log('[Browsenpm.org] Filtered '+ list.length +' packages without github details');
+
+  /**
+   * Process batch of 1000 repositories, called with set interval.
+   *
+   * @api private
+   */
+  function proc() {
+    var i = 0;
+
+    console.log([
+      '[Browsenpm.org] Processing batch [',
+      n,
+      ', ',
+      n + 1000,
+      '] with concurrency 10  '
+    ].join(''));
+
+    async.mapLimit(work.slice(n, n += 1000), 10, function map(details, next) {
+      var repo = details.githubUser +'/'+ details.githubRepo;
+
+      //
+      // Save some disk space
+      //
+      delete details.description;
+      delete details.maintainers;
+
+      //
+      // First check if the repository was moved, otherwise a 404 is returned.
+      //
+      githulk.repository.moved(repo, function moved(err, parsed, changed) {
+        if (err) return next(null, details);
+        if (changed) repo = parsed.user +'/'+ parsed.repo;
+
+        githulk.repository.get(repo, function get(err, data) {
+          if (err) return next(null, details);
+
+          //
+          // Keep track of how much was done
+          //
+          process.stdout.write('*');
+          if (++i % 100 === 0) process.stdout.write(' '+ i +'\n');
+
+          details.stars = data[0].stargazers_count || 0;
+          next(null, details);
+        });
+      });
+    }, function done(err, results) {
+      if (err) return console.error(err);
+
+      console.log([
+        '\n[Browsenpm.org] Finished batch [',
+        n - 1000,
+        ', ',
+        n,
+        '] estimated time remaining ',
+        Math.ceil((work.length - n) / 1000) * 2,
+        ' minutes'
+      ].join(''));
+
+      console.log([
+        '[Browsenpm.org] Githulk ',
+        githulk.authorization,
+      ].join(''));
+
+      //
+      // Add the results to the list.
+      //
+      list = list.concat(results);
+
+      //
+      // Full stack was processed, clear the timer.
+      //
+      if (n >= work.length) {
+        clearInterval(timer);
+
+        list.sort(function sortByStars(a, b) {
+          return (b.stars || 0) - (a.stars || 0);
+        });
+
+        //
+        // Safe the sorted list as JSON.
+        //
+        if (list.length) {
+          console.log('[Browsenpm.org] Writing list as JSON to packages.json');
+          fs.writeFileSync(__dirname + '/packages.json', JSON.stringify(list, null, 2));
+        }
+
+        //
+        // Acknowledge we are done and start resolving.
+        //
+        state.emit('resolve', list);
+      }
+    });
+  }
+
+  //
+  // Start a batch each 2 minutes.
+  //
+  timer = setInterval(proc, interval);
+  proc();
+});
