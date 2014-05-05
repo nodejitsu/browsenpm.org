@@ -30,7 +30,7 @@ var cradle = new (require('cradle')).Connection(couchdb)
 //
 var githulk = new GitHulk({
   cache: new Dynamis('cradle', cradle, couchdb),
-  token: config.get('tokens')
+  tokens: config.get('tokens')
 });
 
 //
