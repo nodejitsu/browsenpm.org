@@ -20,7 +20,7 @@ module.exports = pagelet.extend({
 
       for (var registry in data[type]) {
         results[type][registry] = data[type][registry].slice(
-          pagelet.options[type].n
+          data[type][registry].length - pagelet.options[type].n - 1
         );
       }
     }
