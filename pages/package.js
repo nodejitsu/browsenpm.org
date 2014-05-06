@@ -19,8 +19,15 @@ var cradle = new (require('cradle')).Connection(couchdb)
   , redis = require('redis').createClient(
       redisConf.port,
       redisConf.host,
-      { pass_auth: redisConf.auth }
+      { auth_pass: redisConf.auth }
     );
+
+//
+// Lets just log redis errors so we know what the fuck is going on
+//
+redis.on('error', function (err) {
+  console.log(err);
+});
 
 //
 // Initialize GitHulk and provide a CouchDB cache layer.
