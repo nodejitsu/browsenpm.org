@@ -16,5 +16,10 @@ exports.Page = Page.extend({
     npm.typography,
     npm.animations,
     npm.tables
-  ]
+  ],
+
+  pagelets: {
+    navigation: require('./pagelets/navigation'),
+    footer: require('./contour').footer
+  }
 });
