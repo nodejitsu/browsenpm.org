@@ -17,7 +17,7 @@ module.exports = pagelet.extend({
       // { name: 'Packages', href: '/packages/' },
       // { name: 'Authors', href: '/authors/' },
       { name: 'Node.js', href: 'http://nodejs.org', target: 'blank' },
-      { name: 'Help', href: '/help/' },
+      { name: 'Help', href: '/help' },
     ]
   }
 });
