@@ -9,7 +9,7 @@ require('../base').Page.extend({
 
   pagelets: {                     // The pagelets that should be rendered.
     navigation: require('../pagelets/navigation'),
-    sidebar: require('npm-documentation-pagelet').sidebar,
+    toc: require('../pagelets/toc'),
     footer: require('../contour').footer
   }
 }).on(module);
