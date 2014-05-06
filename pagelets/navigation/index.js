@@ -4,6 +4,7 @@
 // Default navigation pagelet.
 //
 module.exports = require('../../contour').navigation.extend({
+  view: 'view.hbs',
   data: {
     base: '',
     login: false,
