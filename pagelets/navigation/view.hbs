@@ -1,0 +1,16 @@
+<section class="navigation" id="navigation">
+  <nav class="row">
+    <h1>
+      <a href="/" class="logo" title="Back to the homepage">Nodejitsu</a>
+    </h1>
+    <a href="#navigation" class="mobile btn-icon ss-rows"></a>
+
+    {{#navigation-links}}
+    <a href="{{href}}"{{target}}{{active}}>
+      {{name}}
+    </a>
+    {{/navigation-links}}
+
+    <span class="beta right label label-warning">BETA</span>
+  </nav>
+</section>

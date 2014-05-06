@@ -1,10 +1,13 @@
 'use strict';
 
+var pagelet = require('../../contour').navigation;
+
 //
-// Default navigation pagelet.
+// Extend default navigation pagelet.
 //
-module.exports = require('../../contour').navigation.extend({
-  view: 'view.hbs',
+module.exports = pagelet.extend({
+  view: __dirname + '/view.hbs',
+  css: pagelet.prototype.css.concat(__dirname + '/label.styl'),
   data: {
     base: '',
     login: false,
