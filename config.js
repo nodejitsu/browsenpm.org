@@ -11,7 +11,7 @@ var options = {
     description: 'Config file to load on startup',
     alias: 'c',
     string: true,
-    default: __dirname + '/development.json'
+    default: __dirname + '/config.json'
   }
 };
 

@@ -1,0 +1,22 @@
+{
+  "port": 8081,
+  "tokens": "github token",
+  "registry": "https://registry.nodejitsu.com/",
+  "probes": [
+    "ping",
+    "delta",
+    "publish"
+  ],
+  "redis": {
+    "host": "localhost",
+    "port": 6379
+  },
+  "couchdb": {
+    "database": "browsenpm",
+    "host": "localhost",
+    "port": 5984
+  },
+  "npm": {
+    "loglevel": "silent"
+  }
+}
