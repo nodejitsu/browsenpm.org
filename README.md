@@ -46,6 +46,10 @@ credentials can (and are) provided to the configuration of the [npm-probe] insta
 npm-probe is provided with a CouchDB cache instance. All data is stored in the
 database `browsenpm`.
 
+When running multiple instances of browsenpm.org accessible via balancers, make
+sure to only start npm-probe once. Set the environment variable `PROBE=silent` to
+prevent an instance from collecting data.
+
 [npm-probe]: https://github.com/Moveo/npm-probe
 
 ### Cache
