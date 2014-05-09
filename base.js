@@ -1,13 +1,13 @@
 'use strict';
 
-var Page = require('bigpipe').Page
+var BigPipe = require('bigpipe')
   , Contour = require('contour')
   , npm = Contour.get('npm');
 
 //
 // Create a default page setup for browsenpm.org pages.
 //
-exports.Page = Page.extend({
+exports.Page = BigPipe.Page.extend({
   dependencies: [
     npm.normalize,
     npm.global,
