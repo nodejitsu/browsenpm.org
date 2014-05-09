@@ -1,6 +1,6 @@
 {
   "port": 8081,
-  "tokens": "github token",
+  "tokens": [],
   "registry": "https://registry.nodejitsu.com/",
   "probes": [
     "ping",
