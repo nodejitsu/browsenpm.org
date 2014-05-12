@@ -75,7 +75,7 @@ exports.server = function server(pipe, options) {
         part.results = collector.run(
           'transform',
           type,
-          cache[type][registry].slice(-10)
+          cache[type][registry]
         ).pop();
 
         //
@@ -115,7 +115,7 @@ exports.server = function server(pipe, options) {
           data[type][registry] = collector.run(
             'transform',
             type,
-            cache[type][registry].slice() // TODO check if slice is still required.
+            cache[type][registry]
           );
 
           //
@@ -224,7 +224,14 @@ function list(view, done) {
     }, function store(error, data) {
       if (error) return next(error);
 
-      if (~Collector.probes[view].list.indexOf(name)) results[name] = data[name] || [];
+      //
+      // Add data in reversed order and only if probes are actively fetching
+      // the data type. Data needs to be reversed due to the descending key.
+      //
+      if (~Collector.probes[view].list.indexOf(name)) {
+        results[name] = (data[name] || []).reverse();
+      }
+
       next();
     });
   }, function final(error) {
