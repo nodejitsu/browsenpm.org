@@ -4,8 +4,7 @@
   "registry": "https://registry.nodejitsu.com/",
   "probes": [
     "ping",
-    "delta",
-    "publish"
+    "delta"
   ],
   "redis": {
     "host": "localhost",
