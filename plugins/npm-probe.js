@@ -1,6 +1,6 @@
 'use strict';
 
-var pagelet = require('registry-status-pagelet')
+var debug = require('debug')('browsenpm:data')
   , Collector = require('npm-probe')
   , config = require('../config')
   , Dynamis = require('dynamis')
@@ -40,6 +40,7 @@ exports.name = 'npm-probe';
 exports.server = function server(pipe, options) {
   prepare(function prepped(error) {
     if (error) return bailout(error);
+    debug('Finished preparing CouchDB for data collection and querying');
 
     async.parallel({
       ping: async.apply(list, 'ping'),
@@ -47,6 +48,8 @@ exports.server = function server(pipe, options) {
       publish: async.apply(list, 'publish')
     }, function fetched(error, cache) {
       if (error) return bailout(error);
+      debug('Fetched data for probes: %s', Object.keys(cache).join(', '));
+
       var data = {}
         , latest = {};
 
@@ -55,6 +58,7 @@ exports.server = function server(pipe, options) {
       //
       collector.on('probe::ran', function ran(error, item) {
         if (error) return console.error(error);
+        debug('Received %s data for %s ', item.name, item.registry);
 
         var type = item.name
           , registry = item.registry
@@ -103,6 +107,11 @@ exports.server = function server(pipe, options) {
         latest[type] = latest[type] || {};
 
         for (var registry in cache[type]) {
+          if (!cache[type][registry].length) {
+            data[type][registry] = [];
+            continue;
+          }
+
           data[type][registry] = collector.run(
             'transform',
             type,
@@ -127,6 +136,9 @@ exports.server = function server(pipe, options) {
       //
       collector.data = data;
       collector.latest = collector.clone(latest);
+
+      debug('Finished transforming initial data');
+      pipe.emit('initialized');
     });
 
     //
@@ -166,6 +178,7 @@ function prepare(done) {
       //
       delete doc._rev;
       if (JSON.stringify(doc) !== JSON.stringify(setup)) {
+        debug('Preparing CouchDB with new design document');
         return couch.save(id, setup, done);
       }
 
@@ -193,12 +206,32 @@ function prepare(done) {
  * @api private
  */
 function list(view, done) {
+  var results = {};
+
   if ('function' !== typeof done) {
     done = view;
     view = 'ping';
   }
 
-  couch.list('results/byRegistry/' + view, done);
+  async.each(Object.keys(collector.registries), function fetchEach(name, next) {
+    debug('Listing data from CouchDB for %s of type %s', name, view);
+
+    couch.list('results/byRegistry/' + view, {
+      startkey: [name, []],
+      descending: true,
+      endkey: [name],
+      limit: 2400
+    }, function store(error, data) {
+      if (error) return next(error);
+
+      if (~Collector.probes[view].list.indexOf(name)) results[name] = data[name] || [];
+      next();
+    });
+  }, function final(error) {
+    if (error) return done(error);
+
+    done(null, results);
+  });
 }
 
 /**

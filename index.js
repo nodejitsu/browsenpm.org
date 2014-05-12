@@ -23,7 +23,7 @@ layout.options = { base: path.join(__dirname, 'views', 'base.ejs') };
 //
 // Initialise the BigPipe server.
 //
-var pipe = BigPipe.createServer(port, {
+var pipe = new BigPipe(require('http').createServer(), {
   pages: path.join(__dirname, 'pages'),
   dist: path.join(__dirname, 'dist'),
   plugins: [ probe, layout, watch ]
@@ -46,6 +46,11 @@ pipe.on('error', function error(err) {
 pipe.once('listening', function listening() {
   console.log('Browsenpm.org is now running on http://localhost:%d', port);
 });
+
+//
+// Start listening when all data is properly prepared and fetched.
+//
+pipe.once('initialized', pipe.listen.bind(pipe, port));
 
 //
 // Expose the server.
