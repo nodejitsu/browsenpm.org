@@ -3,19 +3,22 @@
 var path = require('path')
   , BigPipe = require('bigpipe')
   , connect = require('connect')
-  , config = require('./config')
-  , debug = require('debug')('browsenpm:server');
+  , memory = require('memory-producer')
+  , debug = require('debug')('browsenpm:server')
+  , config = require('./config');
 
 //
 // Setup all the configuration
 //
-var port = config.get('port');
+var port = config.get('port')
+  , service = config.get('service');
 
 //
 // Initialize plugins and add a valid path to base for plugin-layout.
 //
 var watch = require('bigpipe-watch')
   , layout = require('bigpipe-layout')
+  , godot = require('bigpipe-godot')
   , probe = require('./plugins/npm-probe');
 
 //
@@ -31,8 +34,13 @@ layout.options = {
 var pipe = new BigPipe(require('http').createServer(), {
   pages: path.join(__dirname, 'pages'),
   dist: path.join(__dirname, 'dist'),
-  plugins: [ probe, layout, watch ]
+  plugins: [ probe, layout, watch , godot]
 });
+
+//
+// Add some producers to the godot client if it exists
+//
+pipe.godot && pipe.godot.add(new Memory({ service: service }));
 
 //
 // Add middleware.
