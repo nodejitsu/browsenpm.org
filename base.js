@@ -1,8 +1,35 @@
 'use strict';
 
 var BigPipe = require('bigpipe')
-  , Contour = require('contour')
-  , npm = Contour.get('npm');
+  , contour = require('./contour')
+  , npm = contour.get('npm');
+
+/**
+ * Define small collection of default pagelets, this prevents code duplication.
+ *
+ * @constructor
+ * @api public
+ */
+function Pagelets() {
+  this.navigation = require('./pagelets/navigation');
+  this.footer = contour.footer;
+  this.analytics = contour.analytics;
+}
+
+/**
+ * Add pagelets to the collection.
+ *
+ * @param {Object} pagelets Collection of pagelets listed by name.
+ * @returns {Pagelets} fluent interface
+ * @api public
+ */
+Pagelets.prototype.add = function add(pagelets) {
+  for (var name in pagelets) {
+    this[name] = pagelets[name];
+  }
+
+  return this;
+};
 
 //
 // Create a default page setup for browsenpm.org pages.
@@ -17,9 +44,14 @@ exports.Page = BigPipe.Page.extend({
     npm.animations,
     npm.tables
   ],
+});
 
-  pagelets: {
-    navigation: require('./pagelets/navigation'),
-    footer: require('./contour').footer
+//
+// Simple getter for exposing a fresh set of default pagelets.
+//
+Object.defineProperty(exports, 'pagelets', {
+  enumerable: false,
+  get: function pagelets() {
+    return new Pagelets;
   }
 });

@@ -2,9 +2,9 @@
 
 var GitHulk = require('githulk')
   , Dynamis = require('dynamis')
-  , Page = require('../base').Page
   , Registry = require('npm-registry')
-  , config = require('../config');
+  , config = require('../config')
+  , base = require('../base');
 
 //
 // Get configurations.
@@ -48,19 +48,16 @@ var registry = new Registry({
 //
 // Extend the default page.
 //
-Page.extend({
+base.Page.extend({
   path: '/package/:name',
   view: '../views/package.ejs',
 
-  pagelets: {
-    navigation: require('../pagelets/navigation'),
+  pagelets: base.pagelets.add({
     package: require('packages-pagelet').extend({
       cache: new Dynamis('redis', redis, redisConf),
       dependenciesPagelet: '/dependencies',
       registry: registry,
       githulk: githulk
     }),
-
-    footer: require('../contour').footer
-  }
+  })
 }).on(module);

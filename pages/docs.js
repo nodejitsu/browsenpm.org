@@ -1,15 +1,15 @@
 'use strict';
 
+var base = require('../base');
+
 //
 // Extend the default page.
 //
-require('../base').Page.extend({
-  path: '/help',                  // HTTP route we should respond to.
-  view: '../views/docs.ejs',      // The base template we need to render.
+base.Page.extend({
+  path: '/help',
+  view: '../views/docs.ejs',
 
-  pagelets: {                     // The pagelets that should be rendered.
-    navigation: require('../pagelets/navigation'),
+  pagelets: base.pagelets.add({
     toc: require('../pagelets/toc'),
-    footer: require('../contour').footer
-  }
+  })
 }).on(module);

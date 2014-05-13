@@ -1,16 +1,16 @@
 'use strict';
 
+var base = require('../base');
+
 //
 // Extend the default page.
 //
-require('../base').Page.extend({
+base.Page.extend({
   path: '/',
   view: '../views/index.ejs',
 
-  pagelets: {
-    navigation: require('../pagelets/navigation'),
+  pagelets: base.pagelets.add({
     status: require('../pagelets/status'),
-    search: require('npm-search-pagelet'),
-    footer: require('../contour').footer
-  }
+    search: require('npm-search-pagelet')
+  })
 }).on(module);

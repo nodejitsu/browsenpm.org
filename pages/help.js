@@ -1,16 +1,16 @@
 'use strict';
 
+var base = require('../base');
+
 //
 // Extend the default page.
 //
-require('../base').Page.extend({
-  path: '/help/:category/:name',  // HTTP route we should respond to.
-  view: '../views/help.ejs',      // The base template we need to render.
+base.Page.extend({
+  path: '/help/:category/:name',
+  view: '../views/help.ejs',
 
-  pagelets: {                     // The pagelets that should be rendered.
-    navigation: require('../pagelets/navigation'),
+  pagelets: base.pagelets.add({
     sidebar: require('npm-documentation-pagelet').sidebar,
-    documentation: require('npm-documentation-pagelet'),
-    footer: require('../contour').footer
-  }
+    documentation: require('npm-documentation-pagelet')
+  })
 }).on(module);

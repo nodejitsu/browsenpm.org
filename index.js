@@ -3,8 +3,8 @@
 var path = require('path')
   , BigPipe = require('bigpipe')
   , connect = require('connect')
-  , debug = require('debug')('browsenpm:server')
-  , config = require('./config');
+  , config = require('./config')
+  , debug = require('debug')('browsenpm:server');
 
 //
 // Setup all the configuration
@@ -18,7 +18,12 @@ var watch = require('bigpipe-watch')
   , layout = require('bigpipe-layout')
   , probe = require('./plugins/npm-probe');
 
-layout.options = { base: path.join(__dirname, 'views', 'base.ejs') };
+//
+// Set base template and add default pagelets.
+//
+layout.options = {
+  base: path.join(__dirname, 'views', 'base.ejs'),
+};
 
 //
 // Initialise the BigPipe server.
