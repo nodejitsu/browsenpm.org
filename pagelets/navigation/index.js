@@ -7,7 +7,12 @@ var pagelet = require('../../contour').navigation;
 //
 module.exports = pagelet.extend({
   view: __dirname + '/view.hbs',
-  css: pagelet.prototype.css.concat(__dirname + '/label.styl'),
+
+  css: [
+    pagelet.prototype.css,
+    __dirname + '/label.styl'
+  ],
+
   data: {
     base: '',
     login: false,
