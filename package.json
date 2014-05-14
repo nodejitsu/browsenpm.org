@@ -1,6 +1,6 @@
 {
   "name": "browsenpm",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "description": "Browse packages, users, code, stats and more the public npm registry in style.",
   "main": "index.js",
   "scripts": {

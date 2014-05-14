@@ -14,17 +14,10 @@ function Pagelets() {
   this.navigation = require('./pagelets/navigation');
   this.footer = contour.footer;
   this.analytics = contour.analytics.extend({
-    initialize: function initialize() {
-      this.use('script', this.script);
-      this.use('keys', this.keys);
-
-      this.set({
-        domain: 'browsenpm.org',
-        production: {
-          segment: 'gikqh9ctxn',
-          ga: 'UA-45911788-2'
-        }
-      });
+    data: {
+      domain: 'browsenpm.org',
+      key: 'gikqh9ctxn',
+      type: 'segment'
     }
   });
 }
