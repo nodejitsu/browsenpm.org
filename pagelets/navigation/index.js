@@ -22,6 +22,8 @@ module.exports = pagelet.extend({
       // { name: 'Packages', href: '/packages/' },
       // { name: 'Authors', href: '/authors/' },
       { name: 'Node.js', href: 'http://nodejs.org', target: 'blank' },
+      { name: 'Private npm', href: 'http://nodejitsu.com/try/private-npm', target: 'blank' },
+      { name: 'package.json', href: '/package.json' },
       { name: 'Help', href: '/help' },
     ]
   }
