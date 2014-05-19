@@ -34,7 +34,7 @@
     "bigpipe-layout": "0.1.x",
     "bigpipe-watch": "0.1.x",
     "connect": "2.15.x",
-    "contour": "0.2.x",
+    "contour": "0.3.x",
     "cradle": "0.6.x",
     "debug": "0.8.x",
     "dynamis": "0.1.x",
