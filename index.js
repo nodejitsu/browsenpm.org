@@ -3,9 +3,9 @@
 var path = require('path')
   , BigPipe = require('bigpipe')
   , connect = require('connect')
-  , memory = require('memory-producer')
-  , debug = require('debug')('browsenpm:server')
-  , config = require('./config');
+  , config = require('./config')
+  , Memory = require('memory-producer')
+  , debug = require('debug')('browsenpm:server');
 
 //
 // Setup all the configuration
@@ -41,7 +41,7 @@ var pipe = new BigPipe(require('http').createServer(), {
 //
 // Add some producers to the godot client if it exists
 //
-pipe.godot && pipe.godot.add(new Memory({ service: service }));
+if (pipe.godot) pipe.godot.add(new Memory({ service: service }));
 
 //
 // Add middleware.
