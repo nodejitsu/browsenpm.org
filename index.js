@@ -35,7 +35,7 @@ var pipe = new BigPipe(require('http').createServer(), {
   pages: path.join(__dirname, 'pages'),
   dist: path.join(__dirname, 'dist'),
   godot: config.get('godot'),
-  plugins: [ probe, layout, watch , godot],
+  plugins: [ probe, layout, watch, godot ],
 });
 
 //
@@ -54,7 +54,7 @@ pipe
 // Listen for errors and the listen event.
 //
 pipe.on('error', function error(err) {
-  console.error('Server received an error:'+ err.message, err.stack);
+  console.error('Browsenpm.org received an error:'+ err.message, err.stack);
 });
 
 pipe.once('listening', function listening() {
