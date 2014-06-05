@@ -1,8 +1,9 @@
 'use strict';
 
 var base = require('../base')
-  , contour = require('./contour')
+  , contour = require('../contour')
   , npm = contour.get('npm');
+
 //
 // Extend the default page.
 //
@@ -11,7 +12,7 @@ base.Page.extend({
   view: '../views/docs.ejs',
 
   dependencies: [
-    npm.get('code')
+    //npm.code
   ],
 
   pagelets: base.pagelets.add({
