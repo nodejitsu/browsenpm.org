@@ -1,68 +1,64 @@
 <section class="documentation row">
+  <h1 id="cheatsheet">npm cheat sheet</h1>
   <section class="row post-content">
-    <h1>npm cheat sheet</h1>
     <p>
-      <a href="http://npmjs.org">npm</a> is the node package manager. It helps you
-      manage your <a href="http://nodejs.org">node.js</a> modules and dependencies.
-    </p>
-
-    <p>
-      Here is a quick cheatsheet of several <code>npm</code> commands:
+      For the full <a href="#toc">table of contents</a> see below, but first here
+      is a quick cheatsheet of several <code>npm</code> commands:
     </p>
 
     <ul class="sixcol">
       <li>
-        <a href="#Installing_npm">
+        <a href="#installingnpm">
           Installing npm
         </a>
       </li>
       <li>
-        <a href="#Update_npm">
+        <a href="#updatenpm">
           Update npm
         </a>
       </li>
       <li>
-        <a href="#Search_for_npm_packages">
+        <a href="#searchfornpmpackages">
           Search for npm packages
         </a>
       </li>
       <li>
-        <a href="#View_details_of_a_npm_package">
+        <a href="#viewdetailsofanpmpackage">
           View details of a npm package
         </a>
       </li>
       <li>
-        <a href="#Installing_a_npm_package_locally">
+        <a href="#installinganpmpackagelocally">
           Installing a npm package locally
         </a>
       </li>
       <li>
-        <a href="#Installing_a_npm_package_into_an_application">
+        <a href="#installinganpmpackageintoanapplication">
           Installing a npm package into an application
         </a>
       </li>
       <li>
-        <a href="#Understanding_Global_versus_Local_installs_in_npm">
+        <a href="#understandingGlobalversusLocalinstallsinnpm">
           Understanding Global versus Local installs in npm
         </a>
       </li>
       <li>
-        <a href="#Global_Package_Installation">
+        <a href="#globalPackageInstallation">
           Global Package Installation
         </a>
       </li>
       <li>
-        <a href="#Uninstalling_a_package_locally">
+        <a href="#uninstallingapackagelocally">
           Uninstalling a package locally
         </a>
       </li>
       <li>
-        <a href="#Uninstalling_a_package_globally">
+        <a href="#uninstallingapackageglobally">
           Uninstalling a package globally
         </a>
       </li>
       <li>
-        <a href="#Installing_a_specific_version_of_a_package">
+        <a href="#installingaspecificversionofapackage">
           Installing a specific version of a package
         </a>
       </li>
@@ -70,72 +66,71 @@
 
     <ul class="sixcol last">
       <li>
-        <a href="#Cloning_a_module_from_Github">
+        <a href="#cloningamodulefromGithub">
           Cloning a module from Github
         </a>
       </li>
       <li>
-        <a href="#Linking_any_npm_package_locally">
+        <a href="#linkinganynpmpackagelocally">
           Linking any npm package locally
         </a>
       </li>
       <li>
-        <a href="#Linking_local_npm_packages_to_multiple_applications">
+        <a href="#linkinglocalnpmpackagestomultipleapplications">
           Linking local npm packages to multiple applications
         </a>
       </li>
       <li>
-        <a href="#Unlinking_a_npm_package_from_an_application">
+        <a href="#unlinkinganpmpackagefromanapplication">
           Unlinking a npm package from an application
         </a>
       </li>
       <li>
-        <a href="#Unlinking_a_npm_package_from_your_system">
+        <a href="#unlinkinganpmpackagefromyoursystem">
           Unlinking a npm package from your system
         </a>
       </li>
       <li>
-        <a href="#Create_a_new_npm_package">
+        <a href="#createanewnpmpackage">
           Create a new npm package
         </a>
       </li>
       <li>
-        <a href="#Creating_a_new_user_account_on_npm">
+        <a href="#creatinganewuseraccountonnpm">
           Creating a new user account on npm
         </a>
       </li>
       <li>
-        <a href="#Publishing_a_npm_package">
+        <a href="#publishinganpmpackage">
           Publishing a npm package
         </a>
       </li>
       <li>
-        <a href="#Unpublishing_a_npm_package">
+        <a href="#unpublishinganpmpackage">
           Unpublishing a npm package
         </a>
       </li>
       <li>
-        <a href="#Managing_owners_of_packages">
+        <a href="#managingownersofpackages">
           Managing owners of packages
         </a>
       </li>
     </ul>
 
     <article class="row">
-      <h2 id="installingnpm">Installing npm</h2>
-      <pre>
-        <code> curl http://npmjs.org/install.sh | sh</code>
-      </pre>
+      <h2 id="installingnpm" class="twelvecol">
+        Installing npm
+        <small>
+          <small><a href="#cheatsheet" class="right">back to top</a></small>
+        </small>
+      </h2>
+      <pre><code> curl http://npmjs.org/install.sh | sh</code></pre>
 
       <h2 id="updatenpm">Update npm</h2>
       <p>There are several ways you can update <code>npm</code>.</p>
-      <pre>
-        <code> curl http://npmjs.org/install.sh | sh</code>
-      </pre>
+      <pre><code> curl http://npmjs.org/install.sh | sh</code></pre>
       <p><strong>or</strong></p>
-      <pre>
-        <code> npm install npm -g </code>
-      </pre>
+      <pre><code> npm install npm -g </code></pre>
 
       <h2 id="searchfornpmpackages">Search for npm packages</h2>
       <pre><code> npm search hook.io </code></pre>
@@ -150,7 +145,12 @@
       <h2 id="viewdetailsofanpmpackage">View details of a npm package</h2>
       <pre><code> npm view hook.io </code></pre>
 
-      <h2 id="installinganpmpackagelocally">Installing a npm package locally</h2>
+      <h2 id="installinganpmpackagelocally">
+        Installing a npm package locally
+        <small>
+          <small><a href="#cheatsheet" class="right">back to top</a></small>
+        </small>
+      </h2>
       <p>For the purpose of this demo, we will use <code>http-server</code>.</p>
       <p>
         <code>http-server</code> is a package we've written which provides an
@@ -192,6 +192,9 @@
 
       <h2 id="understandingglobalversuslocalinstallsinnpm">
         Understanding Global versus Local installs in npm
+        <small>
+          <small><a href="#cheatsheet" class="right">back to top</a></small>
+        </small>
       </h2>
       <p>
         By default, <code>npm</code> will install all packages into the
@@ -232,7 +235,12 @@
       <p>b) Install the package globally</p>
       <pre><code> npm install http-server -g</code></pre>
 
-      <h2 id="globalpackageinstallation">Global Package Installation</h2>
+      <h2 id="globalpackageinstallation">
+        Global Package Installation
+        <small>
+          <small><a href="#cheatsheet" class="right">back to top</a></small>
+        </small>
+      </h2>
       <p>If you want to have a package available globally use:</p>
       <pre><code> npm install http-server -g</code></pre>
       <p>
@@ -261,6 +269,9 @@
 
       <h2 id="installingaspecificversionofapackage">
         Installing a specific version of a package
+        <small>
+          <small><a href="#cheatsheet" class="right">back to top</a></small>
+        </small>
       </h2>
       <pre><code> cd mynewapp/
  npm install http-server@0.3.0</code></pre>
@@ -298,6 +309,9 @@
 
       <h2 id="linkinglocalnpmpackagestomultipleapplications">
         Linking local npm packages to multiple applications
+        <small>
+          <small><a href="#cheatsheet" class="right">back to top</a></small>
+        </small>
       </h2>
       <p>
         As we've seen before, <code>npm</code> will install packages into
@@ -336,7 +350,12 @@
       <h2 id="creatinganewuseraccountonnpm">Creating a new user account on npm</h2>
       <pre><code> npm adduser</code></pre>
 
-      <h2 id="publishinganpmpackage">Publishing a npm package</h2>
+      <h2 id="publishinganpmpackage">
+        Publishing a npm package
+        <small>
+          <small><a href="#cheatsheet" class="right">back to top</a></small>
+        </small>
+      </h2>
       <pre><code> cd mypackage/
  npm publish</code></pre>
 
@@ -358,6 +377,11 @@
     </article>
   </section>
 
-  <h1>Table of contents</h1>
+  <h1 id="toc">
+    Table of contents
+    <small>
+      <small><a href="#cheatsheet" class="right">back to top</a></small>
+    </small>
+  </h1>
   <article data-pagelet="toc"></article>
 </section>
