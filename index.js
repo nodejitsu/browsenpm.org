@@ -1,11 +1,11 @@
 'use strict';
 
-var path = require('path')
+var debug = require('diagnostics')('browsenpm:server')
+  , memory = require('memory-producer')
   , BigPipe = require('bigpipe')
   , connect = require('connect')
-  , memory = require('memory-producer')
-  , debug = require('debug')('browsenpm:server')
-  , config = require('./config');
+  , config = require('./config')
+  , path = require('path');
 
 //
 // Setup all the configuration

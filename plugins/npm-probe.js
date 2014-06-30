@@ -1,6 +1,6 @@
 'use strict';
 
-var debug = require('debug')('browsenpm:data')
+var debug = require('diagnostics')('browsenpm:data')
   , Collector = require('npm-probe')
   , config = require('../config')
   , Dynamis = require('dynamis')
