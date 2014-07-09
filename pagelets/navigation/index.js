@@ -13,10 +13,9 @@ module.exports = pagelet.extend({
     __dirname + '/label.styl'
   ],
 
-  data: {
+  defaults: {
     base: '',
-    login: false,
-    signup: false,
+    loggedin: false,
     navigation: [
       { name: 'Explore', href: '/' },
       // { name: 'Packages', href: '/packages/' },
