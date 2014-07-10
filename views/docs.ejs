@@ -1,3 +1,387 @@
 <section class="documentation row">
+  <h1 id="cheatsheet">npm cheat sheet</h1>
+  <section class="row post-content">
+    <p>
+      For the full <a href="#toc">table of contents</a> see below, but first here
+      is a quick cheatsheet of several <code>npm</code> commands:
+    </p>
+
+    <ul class="sixcol">
+      <li>
+        <a href="#installingnpm">
+          Installing npm
+        </a>
+      </li>
+      <li>
+        <a href="#updatenpm">
+          Update npm
+        </a>
+      </li>
+      <li>
+        <a href="#searchfornpmpackages">
+          Search for npm packages
+        </a>
+      </li>
+      <li>
+        <a href="#viewdetailsofanpmpackage">
+          View details of a npm package
+        </a>
+      </li>
+      <li>
+        <a href="#installinganpmpackagelocally">
+          Installing a npm package locally
+        </a>
+      </li>
+      <li>
+        <a href="#installinganpmpackageintoanapplication">
+          Installing a npm package into an application
+        </a>
+      </li>
+      <li>
+        <a href="#understandingGlobalversusLocalinstallsinnpm">
+          Understanding Global versus Local installs in npm
+        </a>
+      </li>
+      <li>
+        <a href="#globalPackageInstallation">
+          Global Package Installation
+        </a>
+      </li>
+      <li>
+        <a href="#uninstallingapackagelocally">
+          Uninstalling a package locally
+        </a>
+      </li>
+      <li>
+        <a href="#uninstallingapackageglobally">
+          Uninstalling a package globally
+        </a>
+      </li>
+      <li>
+        <a href="#installingaspecificversionofapackage">
+          Installing a specific version of a package
+        </a>
+      </li>
+    </ul>
+
+    <ul class="sixcol last">
+      <li>
+        <a href="#cloningamodulefromGithub">
+          Cloning a module from Github
+        </a>
+      </li>
+      <li>
+        <a href="#linkinganynpmpackagelocally">
+          Linking any npm package locally
+        </a>
+      </li>
+      <li>
+        <a href="#linkinglocalnpmpackagestomultipleapplications">
+          Linking local npm packages to multiple applications
+        </a>
+      </li>
+      <li>
+        <a href="#unlinkinganpmpackagefromanapplication">
+          Unlinking a npm package from an application
+        </a>
+      </li>
+      <li>
+        <a href="#unlinkinganpmpackagefromyoursystem">
+          Unlinking a npm package from your system
+        </a>
+      </li>
+      <li>
+        <a href="#createanewnpmpackage">
+          Create a new npm package
+        </a>
+      </li>
+      <li>
+        <a href="#creatinganewuseraccountonnpm">
+          Creating a new user account on npm
+        </a>
+      </li>
+      <li>
+        <a href="#publishinganpmpackage">
+          Publishing a npm package
+        </a>
+      </li>
+      <li>
+        <a href="#unpublishinganpmpackage">
+          Unpublishing a npm package
+        </a>
+      </li>
+      <li>
+        <a href="#managingownersofpackages">
+          Managing owners of packages
+        </a>
+      </li>
+    </ul>
+
+    <article class="row">
+      <h2 id="installingnpm" class="twelvecol">
+        Installing npm
+        <small>
+          <small><a href="#cheatsheet" class="right">back to top</a></small>
+        </small>
+      </h2>
+      <pre><code> curl http://npmjs.org/install.sh | sh</code></pre>
+
+      <h2 id="updatenpm">Update npm</h2>
+      <p>There are several ways you can update <code>npm</code>.</p>
+      <pre><code> curl http://npmjs.org/install.sh | sh</code></pre>
+      <p><strong>or</strong></p>
+      <pre><code> npm install npm -g </code></pre>
+
+      <h2 id="searchfornpmpackages">Search for npm packages</h2>
+      <pre><code> npm search hook.io </code></pre>
+      <p>
+        <strong>Protip:</strong>
+        <em>
+          Try searching via the browser with
+          <a href="http://browsenpm.org/">http://browsenpm.org</a>
+        </em>
+      </p>
+
+      <h2 id="viewdetailsofanpmpackage">View details of a npm package</h2>
+      <pre><code> npm view hook.io </code></pre>
+
+      <h2 id="installinganpmpackagelocally">
+        Installing a npm package locally
+        <small>
+          <small><a href="#cheatsheet" class="right">back to top</a></small>
+        </small>
+      </h2>
+      <p>For the purpose of this demo, we will use <code>http-server</code>.</p>
+      <p>
+        <code>http-server</code> is a package we've written which provides an
+        easy to use wrapper around node's core http.Server class. This module
+        makes for a good example, since it's API provides both a CLI binary and
+        a requirable node.js module.
+      </p>
+      <pre><code> npm install http-server </code></pre>
+      <p>
+        This performs a <strong>local</strong> install of <code>http-server</code>
+        in our <strong>current working directory</strong>
+      </p>
+      <p>
+        You may also notice a new <strong><code>node_modules/</code></strong>
+        folder. You can ignore this for now.
+      </p>
+
+      <h2 id="installinganpmpackageintoanapplication">
+        Installing a npm package into an application
+      </h2>
+      <pre><code> mkdir mynewapp/
+ cd mynewapp
+ npm install http-server
+ touch test.js</code></pre>
+      <p><strong>run script</strong></p>
+      <pre><code> node test.js </code></pre>
+      <p>
+        <strong>
+          Notice how we: <code>require('http-server')</code>?
+          What kind of wizardry is this?
+        </strong>
+      </p>
+      <p>
+        <code>http-server</code> is not the name of a native node.js module.
+        It's the name of the package we just installed from <code>npm</code>.
+        <code>node</code> and <code>npm</code> are smart enough to automatically
+        load modules from our local <code>node_modules/</code> folder.
+      </p>
+
+      <h2 id="understandingglobalversuslocalinstallsinnpm">
+        Understanding Global versus Local installs in npm
+        <small>
+          <small><a href="#cheatsheet" class="right">back to top</a></small>
+        </small>
+      </h2>
+      <p>
+        By default, <code>npm</code> will install all packages into the
+        <strong>local</strong> directory you are working in. This is a
+        <strong>good</strong> thing. It can however, be slightly confusing if
+        you have worked with inferior package management systems in the past.
+      </p>
+      <p><strong>For example, if we:</strong></p>
+      <pre><code> mkdir anotherapp/
+ cd anotherapp/
+ touch test.js</code></pre>
+      <p><strong>test.js</strong></p>
+      <pre><code> var HTTPServer = require('http-server');</code></pre>
+      <p><strong>and then run the script...</strong></p>
+      <pre><code> node test.js</code></pre>
+      <p><strong>we'll get this error:</strong></p>
+      <pre><code> node.js:134 throw e; // process.nextTick error, or 'error' event on first tick
+ Error: Cannot find module 'http-server'
+    at Function._resolveFilename (module.js:326:11)
+    at Function._load (module.js:271:25)
+    at require (module.js:355:19)
+    at Object.&lt;anonymous&gt; (/Users/maraksquires/dev/nodeapps/anotherapp/test.js:1:80)
+    at Module._compile (module.js:411:26)
+    at Object..js (module.js:417:10)
+    at Module.load (module.js:343:31)
+    at Function._load (module.js:302:12)
+    at Array.&lt;anonymous&gt; (module.js:430:10)
+    at EventEmitter._tickCallback (node.js:126:26)</code></pre>
+      <p>
+        This is logical, we installed <code>http-server</code>
+        <strong>locally</strong> into <code>"/mynewapp/"</code>,
+        <strong>not</strong> in <code>"/anotherapp/"</code>.
+      </p>
+      <p><strong>There are two direct solutions to fix this:</strong></p>
+      <p>a) Install the package again, but locally into our new application</p>
+      <pre><code> cd anotherapp/
+ npm install http-server</code></pre>
+      <p>b) Install the package globally</p>
+      <pre><code> npm install http-server -g</code></pre>
+
+      <h2 id="globalpackageinstallation">
+        Global Package Installation
+        <small>
+          <small><a href="#cheatsheet" class="right">back to top</a></small>
+        </small>
+      </h2>
+      <p>If you want to have a package available globally use:</p>
+      <pre><code> npm install http-server -g</code></pre>
+      <p>
+        The <code>-g</code> flag will indicate that <code>http-server</code>
+        should be installed <strong>globally</strong>, and be available for
+        all node scripts to require.
+      </p>
+      <p>
+        Now, we can <strong><code>require('http-server')</code></strong> in
+        any node script on our system.
+      </p>
+      <p>
+        In addition, since the <code>http-server</code> package has specified
+        a <code>bin</code> property, it will also install a binary script
+        called <code>http-server</code> globally.
+      </p>
+      <p><em>Now you can simply run the command:</em></p>
+      <pre><code> http-server</code></pre>
+
+      <h2 id="uninstallingapackagelocally">Uninstalling a package locally</h2>
+      <pre><code> cd mynewapp/
+ npm uninstall http-server</code></pre>
+
+      <h2 id="uninstallingapackageglobally">Uninstalling a package globally</h2>
+      <pre><code>npm uninstall http-server -g</code></pre>
+
+      <h2 id="installingaspecificversionofapackage">
+        Installing a specific version of a package
+        <small>
+          <small><a href="#cheatsheet" class="right">back to top</a></small>
+        </small>
+      </h2>
+      <pre><code> cd mynewapp/
+ npm install http-server@0.3.0</code></pre>
+
+      <h2 id="cloningamodulefromgithub">Cloning a module from Github</h2>
+      <p>
+        This is important. In some cases, there will be patches, forks, or
+        branches that we will want to use for our module, but have not yet been
+        published to <code>npm</code>. Thankfully, the source code for
+        most <code>npm</code> modules is also available on
+        <a href="http://github.com">Github.com</a>
+      </p>
+      <pre><code> git clone git://github.com/nodeapps/http-server.git
+ cd http-server/
+ npm link</code></pre>
+      <p>
+        <em>Our cloned version of <code>http-server</code> is now linked locally</em>
+      </p>
+
+      <h2 id="linkinganynpmpackagelocally">Linking any npm package locally</h2>
+      <p>
+        If you have a local directory containing an <code>npm</code> package,
+        you can link this package locally. This is good for development purposes
+        and for situations when we do not want to publish our package to the
+        public <code>npm</code> repository.
+      </p>
+      <pre><code> cd http-server/
+ npm link</code></pre>
+      <p>
+        <em>
+          Our local version of <code>http-server</code>
+          is "linked" on our local machine
+        </em>
+      </p>
+
+      <h2 id="linkinglocalnpmpackagestomultipleapplications">
+        Linking local npm packages to multiple applications
+        <small>
+          <small><a href="#cheatsheet" class="right">back to top</a></small>
+        </small>
+      </h2>
+      <p>
+        As we've seen before, <code>npm</code> will install packages into
+        the local directory by default. <code>npm link</code> works pretty
+        much the same way.
+      </p>
+      <pre><code> mkdir newapp/
+ cd newapp/
+ npm link http-server</code></pre>
+      <p>
+        <em>
+          This indicates that we've now linked <code>http-server</code>
+          into our new application <code>newapp</code>. If we had not run
+          <code>npm link http-server</code> we would have gotten a missing
+          module error
+        </em>
+      </p>
+
+      <h2 id="unlinkinganpmpackagefromanapplication">
+        Unlinking a npm package from an application
+      </h2>
+      <pre><code> cd newapp/
+ npm unlink http-server</code></pre>
+
+      <h2 id="unlinkinganpmpackagefromyoursystem">
+        Unlinking a npm package from your system
+      </h2>
+      <pre><code> cd http-server/
+ npm unlink</code></pre>
+
+      <h2 id="createanewnpmpackage">Create a new npm package</h2>
+      <pre><code> mkdir mypackage/
+ cd mypackage/
+ npm init</code></pre>
+
+      <h2 id="creatinganewuseraccountonnpm">Creating a new user account on npm</h2>
+      <pre><code> npm adduser</code></pre>
+
+      <h2 id="publishinganpmpackage">
+        Publishing a npm package
+        <small>
+          <small><a href="#cheatsheet" class="right">back to top</a></small>
+        </small>
+      </h2>
+      <pre><code> cd mypackage/
+ npm publish</code></pre>
+
+      <h2 id="unpublishinganpmpackage">Unpublishing a npm package</h2>
+      <pre><code> npm unpublish http-server</code></pre>
+
+      <h2 id="managingownersofpackages">Managing owners of packages</h2>
+      <p>If you want multiple users to be able to publish to the same package:</p>
+      <pre><code> npm owner add marak http-server
+ npm owner rm marak http-server
+ npm owner ls http-server</code></pre>
+      <p>
+        For additional information on the <code>package.json</code> format
+        and <code>npm</code> best practices, check out Charlie Robbin's article:
+        <a href="http://blog.nodejitsu.com/package-dependencies-done-right">
+          http://blog.nodejitsu.com/package-dependencies-done-right
+        </a>
+      </p>
+    </article>
+  </section>
+
+  <h1 id="toc">
+    Table of contents
+    <small>
+      <small><a href="#cheatsheet" class="right">back to top</a></small>
+    </small>
+  </h1>
   <article data-pagelet="toc"></article>
 </section>
