@@ -1,11 +1,11 @@
 'use strict';
 
-var path = require('path')
+var debug = require('diagnostics')('browsenpm:server')
+  , Memory = require('memory-producer')
   , BigPipe = require('bigpipe')
   , connect = require('connect')
   , config = require('./config')
-  , Memory = require('memory-producer')
-  , debug = require('debug')('browsenpm:server');
+  , path = require('path');
 
 //
 // Setup all the configuration
@@ -36,6 +36,7 @@ var pipe = new BigPipe(require('http').createServer(), {
   dist: path.join(__dirname, 'dist'),
   godot: config.get('godot'),
   plugins: [ probe, layout, watch, godot ],
+  transformer: 'sockjs'
 });
 
 //
