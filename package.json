@@ -39,6 +39,7 @@
     "diagnostics": "0.0.x",
     "dynamis": "0.1.x",
     "ejs": "1.0.x",
+    "engine.io": "1.3.x",
     "githulk": "0.1.x",
     "handlebars": "2.0.x",
     "memory-producer": "0.1.x",

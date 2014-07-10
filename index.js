@@ -1,7 +1,7 @@
 'use strict';
 
 var debug = require('diagnostics')('browsenpm:server')
-  , memory = require('memory-producer')
+  , Memory = require('memory-producer')
   , BigPipe = require('bigpipe')
   , connect = require('connect')
   , config = require('./config')
@@ -36,6 +36,7 @@ var pipe = new BigPipe(require('http').createServer(), {
   dist: path.join(__dirname, 'dist'),
   godot: config.get('godot'),
   plugins: [ probe, layout, watch , godot],
+  transformer: 'engine.io'
 });
 
 //
