@@ -36,7 +36,7 @@ var pipe = new BigPipe(require('http').createServer(), {
   dist: path.join(__dirname, 'dist'),
   godot: config.get('godot'),
   plugins: [ probe, layout, watch , godot],
-  transformer: 'engine.io'
+  transformer: 'sockjs'
 });
 
 //
