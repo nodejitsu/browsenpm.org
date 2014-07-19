@@ -18,8 +18,8 @@ var port = config.get('port')
 //
 var watch = require('bigpipe-watch')
   , layout = require('bigpipe-layout')
-  , godot = require('bigpipe-godot')
-  , probe = require('./plugins/npm-probe');
+  , godot = require('bigpipe-godot');
+  //, probe = require('./plugins/npm-probe');
 
 //
 // Set base template and add default pagelets.
@@ -35,14 +35,14 @@ var pipe = new BigPipe(require('http').createServer(), {
   pages: path.join(__dirname, 'pages'),
   dist: path.join(__dirname, 'dist'),
   godot: config.get('godot'),
-  plugins: [ probe, layout, watch, godot ],
+  plugins: [ /*probe,*/ layout, watch, godot ],
   transformer: 'sockjs'
 });
 
 //
 // Add some producers to the godot client if it exists
 //
-if (pipe.godot) pipe.godot.add(new Memory({ service: service }));
+//if (pipe.godot) pipe.godot.add(new Memory({ service: service }));
 
 //
 // Add middleware.
@@ -65,7 +65,9 @@ pipe.once('listening', function listening() {
 //
 // Start listening when all data is properly prepared and fetched.
 //
-pipe.once('initialized', pipe.listen.bind(pipe, port));
+setTimeout(function () {
+  pipe.listen(port)
+}, 2000);
 
 //
 // Expose the server.

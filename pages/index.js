@@ -10,7 +10,7 @@ base.Page.extend({
   view: '../views/index.ejs',
 
   pagelets: base.pagelets.add({
-    status: require('../pagelets/status'),
+    //status: require('../pagelets/status'),
     search: require('npm-search-pagelet')
   })
 }).on(module);
