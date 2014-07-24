@@ -46,7 +46,7 @@
     "npm-dependencies-pagelet": "0.3.x",
     "npm-documentation-pagelet": "0.4.x",
     "npm-package-json-pagelet": "0.2.x",
-    "npm-probe": "0.2.x",
+    "npm-probe": "0.1.x",
     "npm-registry": "0.1.x",
     "npm-search-pagelet": "0.2.x",
     "packages-pagelet": "0.7.x",

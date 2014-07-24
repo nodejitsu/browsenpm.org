@@ -18,6 +18,7 @@ module.exports = pagelet.extend({
     loggedin: false,
     navigation: [
       { name: 'Explore', href: '/' },
+      { name: 'Status', href: '/status' },
       // { name: 'Packages', href: '/packages/' },
       // { name: 'Authors', href: '/authors/' },
       { name: 'Node.js', href: 'http://nodejs.org', target: 'blank' },
