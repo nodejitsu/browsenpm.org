@@ -13,6 +13,7 @@
   },
   "couchdb": {
     "database": "browsenpm",
+    "auth": "nj:nj123123",
     "host": "localhost",
     "port": 5984
   },
