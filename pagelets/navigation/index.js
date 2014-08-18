@@ -33,8 +33,7 @@ module.exports = pagelet.extend({
     loggedin: false,
     navigation: [
       { name: 'Explore', href: '/' },
-      // { name: 'Packages', href: '/packages/' },
-      // { name: 'Authors', href: '/authors/' },
+      { name: 'Status', href: '/status' },
       { name: 'Node.js', href: 'http://nodejs.org', target: 'blank' },
       { name: 'Private npm', href: 'http://nodejitsu.com/try/private-npm', target: 'blank' },
       { name: 'package.json', href: '/package.json' },

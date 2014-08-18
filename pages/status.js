@@ -6,10 +6,10 @@ var base = require('../base');
 // Extend the default page.
 //
 base.Page.extend({
-  path: '/',
-  view: '../views/index.ejs',
+  path: '/status',
+  view: '../views/status.ejs',
 
   pagelets: base.pagelets.add({
-    search: require('npm-search-pagelet')
+    status: require('../pagelets/status'),
   })
 }).on(module);
