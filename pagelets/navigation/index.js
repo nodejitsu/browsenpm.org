@@ -1,6 +1,7 @@
 'use strict';
 
-var pagelet = require('../../contour').navigation;
+var contour = require('../../contour')
+  , pagelet = contour.navigation;
 
 //
 // Extend default navigation pagelet.
@@ -10,8 +11,22 @@ module.exports = pagelet.extend({
 
   css: [
     pagelet.prototype.css,
-    __dirname + '/label.styl'
+    __dirname + '/label.styl',
+    __dirname + '/social.styl'
   ],
+
+  //
+  // Add social sharing pagelet.
+  //
+  pagelets: {
+    share: contour.share.extend({
+      data: {
+        title: 'Browsenpm.org | Nodejitsu Inc.',
+        domain: 'http://www.browsenpm.org',
+        layout: 'horizontal right'
+      }
+    })
+  },
 
   defaults: {
     base: '',
