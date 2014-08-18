@@ -1,14 +1,16 @@
-[
-  {
-    "name": "Mocha",
-    "package": "mocha"
-  },
-  {
-    "name": "ChaiJS",
-    "package": "chai"
-  },
-  {
-    "name": "SinonJS",
-    "package": "sinon"
-  }
-]
+{
+  "modules": [
+    {
+      "name": "Mocha",
+      "package": "mocha"
+    },
+    {
+      "name": "ChaiJS",
+      "package": "chai"
+    },
+    {
+      "name": "SinonJS",
+      "package": "sinon"
+    }
+  ]
+}

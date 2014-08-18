@@ -18,7 +18,7 @@ module.exports = cascade.extend({
       {
         caption: 'modules',
         icon: 'file',
-        n: frameworks.length
+        n: frameworks.modules.length
       },
       {
         caption: 'contributors',
@@ -36,7 +36,7 @@ module.exports = cascade.extend({
       {
         caption: 'modules',
         icon: 'file',
-        n: testing.length
+        n: testing.modules.length
       },
       {
         caption: 'contributors',

@@ -1,14 +1,16 @@
-[
-  {
-    "name": "AngularJS",
-    "package": "angular"
-  },
-  {
-    "name": "Flatiron",
-    "package": "flatiron"
-  },
-  {
-    "name": "Knockout.js",
-    "package": "knockout"
-  }
-]
+{
+  "modules": [
+    {
+      "name": "AngularJS",
+      "package": "angular"
+    },
+    {
+      "name": "Flatiron",
+      "package": "flatiron"
+    },
+    {
+      "name": "Knockout.js",
+      "package": "knockout"
+    }
+  ]
+}
