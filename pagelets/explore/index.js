@@ -2,7 +2,7 @@
 
 var cascade = require('cascading-grid-pagelet')
   , frameworks = require('../meta/frameworks')
-  , testing = require('../meta/testing');
+  , tests = require('../meta/testing');
 
 //
 // Provide data to the Cascading Grid Pagelet.
@@ -15,7 +15,7 @@ module.exports = cascade.extend({
     height: 4,
     width: 7,
     hover: {
-      modules: tests.length
+      modules: frameworks.length,
       contributors: 12 // TODO: Calculate number from module/CouchDB data
     }
   }, {
@@ -25,7 +25,7 @@ module.exports = cascade.extend({
     height: 4,
     width: 7,
     hover: {
-      modules: tests.length
+      modules: tests.length,
       contributors: 12 // TODO: Calculate number from module/CouchDB data
     }
   }]
