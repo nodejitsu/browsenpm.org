@@ -19,6 +19,6 @@ module.exports = base.Page.extend({
 
   pagelets: base.pagelets.add({
     search: require('npm-search-pagelet'),
-    explore: require('cascading-grid-pagelet')
+    explore: require('../pagelets/explore')
   })
 });
