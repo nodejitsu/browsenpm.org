@@ -9,11 +9,10 @@ var contour = require('../../contour')
 module.exports = pagelet.extend({
   view: __dirname + '/view.hbs',
 
-  css: [
-    pagelet.prototype.css,
+  css: pagelet.prototype.css.concat([,
     __dirname + '/label.styl',
     __dirname + '/social.styl'
-  ],
+  ]),
 
   //
   // Add social sharing pagelet.
