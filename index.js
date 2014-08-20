@@ -49,6 +49,7 @@ if (pipe.godot) pipe.godot.add(new Memory({ service: service }));
 //
 pipe
   .before(connect.static(path.join(__dirname, 'public')))
+  .before(connect.static(path.join(__dirname, 'node_modules/cascading-grid-pagelet/patterns')))
   .before(connect.favicon(path.join(__dirname, 'public', 'favicon.png')));
 
 //
