@@ -1,8 +1,8 @@
 'use strict';
 
 var cascade = require('cascading-grid-pagelet')
-  , frameworks = require('../meta/frameworks')
-  , testing = require('../meta/testing');
+  , frameworks = require('../../meta/frameworks')
+  , testing = require('../../meta/testing');
 
 //
 // Provide data to the Cascading Grid Pagelet.
@@ -18,7 +18,7 @@ module.exports = cascade.extend({
       {
         caption: 'modules',
         icon: 'file',
-        n: frameworks.modules.length
+        n: frameworks.data.length
       },
       {
         caption: 'contributors',
@@ -36,7 +36,7 @@ module.exports = cascade.extend({
       {
         caption: 'modules',
         icon: 'file',
-        n: testing.modules.length
+        n: testing.data.length
       },
       {
         caption: 'contributors',

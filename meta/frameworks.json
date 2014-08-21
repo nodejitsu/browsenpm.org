@@ -1,5 +1,5 @@
 {
-  "modules": [
+  "data": [
     {
       "name": "AngularJS",
       "package": "angular"
