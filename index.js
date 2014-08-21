@@ -1,9 +1,10 @@
 'use strict';
 
 var debug = require('diagnostics')('browsenpm:server')
+  , serveFavicon = require('serve-favicon')
+  , serveStatic = require('serve-static')
   , Memory = require('memory-producer')
   , BigPipe = require('bigpipe')
-  , connect = require('connect')
   , config = require('./config')
   , path = require('path');
 
@@ -48,9 +49,9 @@ if (pipe.godot) pipe.godot.add(new Memory({ service: service }));
 // Add middleware.
 //
 pipe
-  .before(connect.static(path.join(__dirname, 'public')))
-  .before(connect.static(path.join(__dirname, 'node_modules/cascading-grid-pagelet/patterns')))
-  .before(connect.favicon(path.join(__dirname, 'public', 'favicon.png')));
+  .before(serveStatic(path.join(__dirname, 'public')))
+  .before(serveStatic(path.join(__dirname, 'node_modules/cascading-grid-pagelet/patterns')))
+  .before(serveFavicon(path.join(__dirname, 'public', 'favicon.png')));
 
 //
 // Listen for errors and the listen event.

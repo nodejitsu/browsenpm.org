@@ -33,7 +33,6 @@
     "bigpipe-godot": "0.1.x",
     "bigpipe-layout": "0.1.x",
     "bigpipe-watch": "0.1.x",
-    "connect": "2.15.x",
     "contour": "0.5.x",
     "cradle": "0.6.x",
     "diagnostics": "0.0.x",
@@ -53,6 +52,8 @@
     "redis": "0.10.x",
     "registry-status-pagelet": "0.3.x",
     "request": "2.36.x",
+    "serve-favicon": "2.0.x",
+    "serve-static": "1.5.x",
     "sockjs": "0.3.x"
   }
 }
