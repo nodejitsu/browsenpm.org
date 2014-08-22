@@ -49,9 +49,9 @@ if (pipe.godot) pipe.godot.add(new Memory({ service: service }));
 // Add middleware.
 //
 pipe
+  .before('favicon', serveFavicon(path.join(__dirname, 'public', 'favicon.png')))
   .before('public', serveStatic(path.join(__dirname, 'public')))
-  .before('cascade-grid', serveStatic(path.join(__dirname, 'node_modules/cascading-grid-pagelet/patterns')))
-  .before('favicon', serveFavicon(path.join(__dirname, 'public', 'favicon.png')));
+  .before('cascade-grid', serveStatic(path.join(__dirname, 'node_modules/cascading-grid-pagelet/patterns')));
 
 //
 // Listen for errors and the listen event.
