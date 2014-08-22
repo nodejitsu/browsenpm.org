@@ -9,7 +9,7 @@ var contour = require('../../contour')
 module.exports = pagelet.extend({
   view: __dirname + '/view.hbs',
 
-  css: pagelet.prototype.css.concat([,
+  css: pagelet.prototype.css.concat([
     __dirname + '/label.styl',
     __dirname + '/social.styl'
   ]),
