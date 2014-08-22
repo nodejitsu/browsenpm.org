@@ -1,6 +1,6 @@
 {
   "name": "browsenpm",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Browse packages, users, code, stats and more the public npm registry in style.",
   "main": "index.js",
   "scripts": {
@@ -44,6 +44,7 @@
     "ejs": "1.0.x",
     "githulk": "0.1.x",
     "handlebars": "2.0.x",
+    "list-pagelet": "0.0.0",
     "memory-producer": "0.1.x",
     "nconf": "0.6.x",
     "npm-dependencies-pagelet": "0.4.x",
