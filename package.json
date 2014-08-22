@@ -33,10 +33,6 @@
     "bigpipe-godot": "0.1.x",
     "bigpipe-layout": "0.1.x",
     "bigpipe-watch": "0.1.x",
-<<<<<<< HEAD
-=======
-    "connect": "2.15.x",
->>>>>>> [deps] Bump dependencies to prefer for a 0.5
     "contour": "0.6.x",
     "cradle": "0.6.x",
     "diagnostics": "0.0.x",
@@ -52,21 +48,13 @@
     "npm-package-json-pagelet": "0.3.x",
     "npm-probe": "0.1.x",
     "npm-registry": "0.1.x",
-<<<<<<< HEAD
-    "npm-search-pagelet": "0.2.x",
-    "packages-pagelet": "0.7.x",
-    "redis": "0.10.x",
-    "registry-status-pagelet": "0.3.x",
-    "request": "2.36.x",
-    "serve-favicon": "2.0.x",
-    "serve-static": "1.5.x",
-=======
     "npm-search-pagelet": "0.3.x",
     "packages-pagelet": "0.8.x",
     "redis": "0.12.x",
     "registry-status-pagelet": "0.4.x",
     "request": "2.40.x",
->>>>>>> [deps] Bump dependencies to prefer for a 0.5
+    "serve-favicon": "2.0.x",
+    "serve-static": "1.5.x",
     "sockjs": "0.3.x"
   }
 }
