@@ -12,16 +12,19 @@ base.Page.extend({
   view: '../views/explore.ejs',
 
   //
-  // Set of allowed list names.
+  // Set of default titles that will be passed to data.
   //
-  lists: [ 'frameworks', 'testing' ],
+  titles: {
+    frameworks: 'MVC frameworks',
+    testing: 'Testing and test runners'
+  },
 
   //
   // Add list pagelets with different content to the page.
   //
   pagelets: base.pagelets.add({
-    frameworks: require('list-pagelet').extend(frameworks),
-    testing: require('list-pagelet').extend(testing)
+    frameworks: require('../pagelets/list').extend(frameworks),
+    testing: require('../pagelets/list').extend(testing)
   }),
 
   /**
@@ -30,18 +33,18 @@ base.Page.extend({
    * @api public
    */
   initialize: function initialize() {
-    var name = this.params.name;
+    var name = this.params.name
+      , titles = this.titles
+      , lists = Object.keys(titles);
 
     //
     // Show 404 if users requested to explore a list that does not exist.
     //
-    if (!~this.lists.indexOf(name)) return this.notFound();
+    if (!~lists.indexOf(name)) return this.notFound();
 
     //
-    // Disable all pagelets but the requested list pagelet by name parameter.
+    // Set the title for the page.
     //
-    this.disabled = this.lists.filter(function filter(list) {
-      return name !== list;
-    });
+    if (name in titles) this.data.title = titles[name];
   }
 }).on(module);
