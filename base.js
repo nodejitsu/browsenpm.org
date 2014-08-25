@@ -12,7 +12,7 @@ var BigPipe = require('bigpipe')
  */
 function Pagelets() {
   this.navigation = require('./pagelets/navigation');
-  this.footer = contour.footer;
+  this.footer = contour.footer.extend({ pagelets: {} });
   this.analytics = contour.analytics.extend({
     data: {
       domain: 'browsenpm.org',
