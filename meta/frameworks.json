@@ -2,15 +2,18 @@
   "data": [
     {
       "name": "AngularJS",
-      "package": "angular"
+      "package": "angular",
+      "link": "https://angularjs.org/"
     },
     {
       "name": "Flatiron",
-      "package": "flatiron"
+      "package": "flatiron",
+      "link": "http://flatironjs.org/"
     },
     {
       "name": "Knockout.js",
-      "package": "knockout"
+      "package": "knockout",
+      "link": "http://knockoutjs.com/"
     }
   ]
 }
