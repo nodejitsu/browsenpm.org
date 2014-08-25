@@ -3,17 +3,17 @@
     {
       "name": "AngularJS",
       "package": "angular",
-      "link": "https://angularjs.org/"
+      "link": "/package/angular"
     },
     {
       "name": "Flatiron",
       "package": "flatiron",
-      "link": "http://flatironjs.org/"
+      "link": "/package/flatiron"
     },
     {
       "name": "Knockout.js",
       "package": "knockout",
-      "link": "http://knockoutjs.com/"
+      "link": "/package/knockout"
     }
   ]
 }
