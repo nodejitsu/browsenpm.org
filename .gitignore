@@ -16,3 +16,4 @@ dist
 npm-debug.log
 node_modules
 dump.rdb
+explore.db

@@ -23,5 +23,16 @@ module.exports = pagelet.extend({
   //
   js: pagelet.prototype.js.concat(
     __dirname + '/client.js'
-  )
+  ),
+
+  /**
+   * Fetch the data of the module from the LevelDB layer. The required data
+   * is stored under the same key as the pagelet name.
+   *
+   * @param {Function} next Completion callback.
+   * @api public
+   */
+  data: function data(next) {
+    this.pipe.explore.get(this.name, next);
+  }
 });

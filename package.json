@@ -41,6 +41,7 @@
     "ejs": "1.0.x",
     "githulk": "0.1.x",
     "handlebars": "2.0.x",
+    "level": "0.18.x",
     "list-pagelet": "0.0.x",
     "memory-producer": "0.1.x",
     "nconf": "0.6.x",

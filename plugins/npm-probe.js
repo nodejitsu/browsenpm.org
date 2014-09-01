@@ -1,6 +1,6 @@
 'use strict';
 
-var debug = require('diagnostics')('browsenpm:data')
+var debug = require('diagnostics')('browsenpm:npm-probe-plugin')
   , Collector = require('npm-probe')
   , config = require('../config')
   , Dynamis = require('dynamis')
@@ -138,7 +138,7 @@ exports.server = function server(pipe, options) {
       collector.latest = collector.clone(latest);
 
       debug('Finished transforming initial data');
-      pipe.emit('initialized');
+      pipe.emit('plugin:init', exports.name);
     });
 
     //

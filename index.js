@@ -16,11 +16,15 @@ var port = config.get('port')
 
 //
 // Initialize plugins and add a valid path to base for plugin-layout.
+// Also set iterator `n` to zero, since both the probe and explore plugins
+// have to prefetch data.
 //
 var watch = require('bigpipe-watch')
   , layout = require('bigpipe-layout')
   , godot = require('bigpipe-godot')
-  , probe = require('./plugins/npm-probe');
+  , probe = require('./plugins/npm-probe')
+  , explore = require('./plugins/explore')
+  , i = 0;
 
 //
 // Set base template and add default pagelets.
@@ -36,7 +40,7 @@ var pipe = new BigPipe(require('http').createServer(), {
   pages: path.join(__dirname, 'pages'),
   dist: path.join(__dirname, 'dist'),
   godot: config.get('godot'),
-  plugins: [ probe, layout, watch, godot ],
+  plugins: [ probe, layout, watch, godot, explore ],
   transformer: 'sockjs'
 });
 
@@ -65,9 +69,15 @@ pipe.once('listening', function listening() {
 });
 
 //
-// Start listening when all data is properly prepared and fetched.
+// Start the server as soon as a set of specific plugins have initialized.
+// Without these plugins several pages will have missing data or functionality.
 //
-pipe.once('initialized', pipe.listen.bind(pipe, port));
+pipe.once('plugin:init', function start(name) {
+  var n = 2;
+
+  if (++i === n) pipe.listen(port);
+  console.log('Plugin ' + name + ' initialized, remaining: ' + (n - i));
+});
 
 //
 // Expose the server.
