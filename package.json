@@ -48,7 +48,7 @@
     "npm-package-json-pagelet": "0.3.x",
     "npm-probe": "0.1.x",
     "npm-registry": "0.1.x",
-    "npm-search-pagelet": "0.3.x",
+    "npm-search-pagelet": "0.4.x",
     "packages-pagelet": "0.8.x",
     "redis": "0.12.x",
     "registry-status-pagelet": "0.4.x",
