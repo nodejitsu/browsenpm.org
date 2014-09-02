@@ -3,6 +3,7 @@
 var debug = require('diagnostics')('browsenpm:explore-plugin')
   , resolve = require('packages-pagelet').resolve
   , dataLayer = require('../data')
+  , moment = require('moment')
   , level = require('level')
   , async = require('async')
   , path = require('path')
@@ -64,20 +65,20 @@ function update(done) {
   // Generate a stack of fetches that can be processed by async.parallel.
   //
   for (var key in list) {
-    list[key].data.forEach(function each(module) {
-      stack[key + '-' + module.name] = function prepare(next) {
-        dataLayer.getModule(module.name, function cache(error, data) {
+    list[key].forEach(function each(name) {
+      stack[key + '-' + name] = function prepare(next) {
+        dataLayer.getModule(name, function cache(error, data) {
           if (!error && data) return next(null, data);
 
           //
           // Nothing found resolve the data structure.
           //
-          resolve(module.name, {
+          resolve(name, {
             registry: dataLayer.registry,
             githulk: dataLayer.githulk
           }, function resolved(error, data) {
             if (error || !data) return next(error || new Error('Missing data'));
-            dataLayer.setModule(module.name, data, next)
+            dataLayer.setModule(name, data, next)
           });
         });
       };
@@ -108,10 +109,11 @@ function update(done) {
 
       list[type] = list[type] || [];
       list[type].push({
+        id: name,
         name: name,
         link: '/package/' + name,
         properties: {
-          updated: pkg.modified,
+          updated: moment(pkg.modified).format('LL'),
           watchers: github.watchers_count,
           maintainers: Object.keys(pkg.maintainers).length,
           stars: pkg.starred.length

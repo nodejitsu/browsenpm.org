@@ -1,6 +1,6 @@
 'use strict';
 
-var major = require('./package.json').version.slice(0, 1)
+var major = require('./package.json').version.split('.').shift()
   , Registry = require('npm-registry')
   , GitHulk = require('githulk')
   , config = require('./config')

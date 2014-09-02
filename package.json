@@ -44,6 +44,7 @@
     "level": "0.18.x",
     "list-pagelet": "0.0.x",
     "memory-producer": "0.1.x",
+    "moment": "2.8.x",
     "nconf": "0.6.x",
     "npm-dependencies-pagelet": "0.4.x",
     "npm-documentation-pagelet": "0.5.x",

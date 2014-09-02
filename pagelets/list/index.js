@@ -6,6 +6,11 @@ var pagelet = require('list-pagelet');
 // Make the list pagelet conditional based on the provided parameter.
 //
 module.exports = pagelet.extend({
+  //
+  // Default key to order the data.
+  //
+  order: 'stars',
+
   /**
    * Provide conditional layer. Only render/display the pagelet if the
    * parameter name equals the name of the list pagelet.
