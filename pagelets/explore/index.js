@@ -1,48 +1,87 @@
 'use strict';
 
 var cascade = require('cascading-grid-pagelet')
-  , frameworks = require('../../meta/frameworks')
-  , testing = require('../../meta/testing');
+  , async = require('async');
 
 //
 // Provide data to the Cascading Grid Pagelet.
 //
 module.exports = cascade.extend({
   blocks: [{
+    type: 'frameworks',
     title: 'Web frameworks',
     sub: 'Popular Node.JS frameworks',
     link: '/explore/frameworks',
     height: 4,
     width: 7,
-    hover: [
-      {
+    hover: {
+      modules: {
         caption: 'modules',
-        icon: 'file',
-        n: frameworks.length
+        icon: 'file'
       },
-      {
+      contributors: {
         caption: 'contributors',
-        icon: 'users',
-        n: 12 // TODO: Calculate number from module/CouchDB data
+        icon: 'users'
       }
-    ]
+    }
   }, {
+    type: 'testing',
     title: 'Testing',
     sub: 'Useful modules for test driven development',
     link: '/explore/testing',
     height: 4,
     width: 7,
-    hover: [
-      {
+    hover: {
+      modules: {
         caption: 'modules',
-        icon: 'file',
-        n: testing.length
+        icon: 'file'
       },
-      {
+      contributors: {
         caption: 'contributors',
-        icon: 'users',
-        n: 12 // TODO: Calculate number from module/CouchDB data
+        icon: 'users'
       }
-    ]
-  }]
+    }
+  }],
+
+  /**
+   * Called on GET, provide data to render blocks.
+   *
+   * @param {Function} render completion callback.
+   * @api public
+   */
+  get: function get(render) {
+    var grid = this;
+
+    async.each(grid.blocks, function each(block, next) {
+      grid.pipe.explore.get(block.type, function cache(error, data) {
+        if (error) return next(error);
+
+        try {
+          data = JSON.parse(data);
+
+          //
+          // Add the live counts to the data.
+          //
+          block.hover.modules.n = data.length
+          block.hover.contributors.n = data.reduce(function sum(n, module) {
+            return n + module.properties.maintainers;
+          }, 0);
+
+          next();
+        } catch(err) {
+          next(err);
+        }
+      });
+    }, function done(error) {
+      if (error) return render(error);
+
+      render(null, {
+        blocks: grid.blocks.slice(0, grid.n),
+        dimension: {
+          height: grid.height,
+          width: grid.width
+        }
+      });
+    });
+  }
 });
