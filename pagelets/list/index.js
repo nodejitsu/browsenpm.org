@@ -38,7 +38,7 @@ module.exports = pagelet.extend({
    * @api public
    */
   data: function data(next) {
-    this.pipe.explore.get(this.name, function (error, data) {
+    this.pipe.explore.get(this.name, function cache(error, data) {
       if (error) return next(error);
 
       try {
