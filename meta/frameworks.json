@@ -1,19 +1,5 @@
-{
-  "data": [
-    {
-      "name": "AngularJS",
-      "package": "angular",
-      "link": "/package/angular"
-    },
-    {
-      "name": "Flatiron",
-      "package": "flatiron",
-      "link": "/package/flatiron"
-    },
-    {
-      "name": "Knockout.js",
-      "package": "knockout",
-      "link": "/package/knockout"
-    }
-  ]
-}
+[
+  "angular",
+  "flatiron",
+  "knockout"
+]

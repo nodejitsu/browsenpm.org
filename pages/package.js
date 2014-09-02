@@ -14,7 +14,7 @@ base.Page.extend({
     package: require('packages-pagelet').extend({
       cache: data.redis,
       dependenciesPagelet: '/dependencies',
-      registry: data.registry
+      registry: data.registry,
       githulk: data.githulk
     })
   })

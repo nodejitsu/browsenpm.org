@@ -1,16 +1,5 @@
-{
-  "data": [
-    {
-      "name": "Mocha",
-      "package": "mocha"
-    },
-    {
-      "name": "ChaiJS",
-      "package": "chai"
-    },
-    {
-      "name": "SinonJS",
-      "package": "sinon"
-    }
-  ]
-}
+[
+  "mocha",
+  "chai",
+  "sinon"
+]

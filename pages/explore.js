@@ -23,8 +23,8 @@ base.Page.extend({
   // Add list pagelets with different content to the page.
   //
   pagelets: base.pagelets.add({
-    frameworks: require('../pagelets/list').extend(frameworks),
-    testing: require('../pagelets/list').extend(testing)
+    frameworks: require('../pagelets/list').extend({}),
+    testing: require('../pagelets/list').extend({})
   }),
 
   /**

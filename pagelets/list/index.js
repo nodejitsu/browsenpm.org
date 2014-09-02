@@ -33,6 +33,14 @@ module.exports = pagelet.extend({
    * @api public
    */
   data: function data(next) {
-    this.pipe.explore.get(this.name, next);
+    this.pipe.explore.get(this.name, function (error, data) {
+      if (error) return next(error);
+
+      try {
+        next(null, JSON.parse(data));
+      } catch(err) {
+        next(err);
+      }
+    });
   }
 });

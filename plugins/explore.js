@@ -2,6 +2,7 @@
 
 var debug = require('diagnostics')('browsenpm:explore-plugin')
   , resolve = require('packages-pagelet').resolve
+  , dataLayer = require('../data')
   , level = require('level')
   , async = require('async')
   , path = require('path')
@@ -28,31 +29,6 @@ db = level(path.join(__dirname, 'explore.db'), {
 exports.name = 'explore';
 
 /**
- * [update description]
- * @param  {Function} done [description]
- * @return {[type]}        [description]
- */
-function update(done) {
-  var stack = {};
-
-  //
-  // Generate a stack of fetches that can be processed by async.parallel.
-  //
-  for (var key in list) {
-    list[key].data.forEach(function each(module) {
-      stack[key + '-' + module.package] = function prepare(next) {
-        resolve(module.package, next);
-      };
-    });
-  }
-
-  async.parallel(stack, function (error, data) {
-    console.log(data);
-    done();
-  });
-}
-
-/**
  * Server side plugin to fetch the latest data on the listed modules and refresh
  * cache each hour.
  *
@@ -64,10 +40,99 @@ exports.server = function server(pipe, options) {
   pipe.explore = db;
 
   if (false !== options.update) {
+    update(pipe.emits('plugin:init', exports.name));
+
+    //
+    // Update the data in LevelDB every 6 hours.
+    //
     setInterval(function refresh() {
       update(pipe.emits('plugin:refresh', exports.name))
-    }, 36E5);
-
-    update(pipe.emits('plugin:init', exports.name));
+    }, 216E5);
   }
 };
+
+/**
+ * Fetch and update the details of each package in the static lists.
+ *
+ * @param {Function} done Completion callback.
+ * @api private
+ */
+function update(done) {
+  var stack = {};
+
+  //
+  // Generate a stack of fetches that can be processed by async.parallel.
+  //
+  for (var key in list) {
+    list[key].data.forEach(function each(module) {
+      stack[key + '-' + module.name] = function prepare(next) {
+        dataLayer.getModule(module.name, function cache(error, data) {
+          if (!error && data) return next(null, data);
+
+          //
+          // Nothing found resolve the data structure.
+          //
+          resolve(module.name, {
+            registry: dataLayer.registry,
+            githulk: dataLayer.githulk
+          }, function resolved(error, data) {
+            if (error || !data) return next(error || new Error('Missing data'));
+            dataLayer.setModule(module.name, data, next)
+          });
+        });
+      };
+    });
+  }
+
+  //
+  // Execute the callstack, after write to LevelDB using a batch operation.
+  //
+  async.parallel(stack, function finished(error, data) {
+    if (error) return done(error);
+
+    var list = {}
+      , type, name, github, pkg;
+
+    //
+    // Create a collection per module type and push each module as an
+    // object on the list.
+    //
+    for (var key in data) {
+      github = data[key].github || {};
+      pkg = data[key].package || {};
+
+      key = key.split('-');
+
+      type = key[0];
+      name = key[1];
+
+      list[type] = list[type] || [];
+      list[type].push({
+        name: name,
+        link: '/package/' + name,
+        properties: {
+          updated: pkg.modified,
+          watchers: github.watchers_count,
+          maintainers: Object.keys(pkg.maintainers).length,
+          stars: pkg.starred.length
+        }
+      });
+    }
+
+    //
+    // Generate PUT operation for LevelDB.
+    //
+    var ops = Object.keys(list).map(function each(type) {
+      return {
+        type: 'put',
+        key: type,
+        value: JSON.stringify(list[type])
+      }
+    });
+
+    //
+    // Store the resolved registry and github data in LevelDB.
+    //
+    db.batch(ops, done);
+  });
+}

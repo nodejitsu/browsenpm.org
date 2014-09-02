@@ -1,7 +1,9 @@
 'use strict';
 
-var Registry = require('npm-registry')
-  , config = require('../config')
+var major = require('./package.json').version.slice(0, 1)
+  , Registry = require('npm-registry')
+  , GitHulk = require('githulk')
+  , config = require('./config')
   , Dynamis = require('dynamis')
   , cradle = require('cradle')
   , redis = require('redis');
@@ -23,7 +25,7 @@ function DataLayer() {
   //
   // Initialize clients for Redis and CouchDB.
   //
-  this.cradle = (new cradle).Connection(couchdb)
+  this.cradle = new cradle.Connection(couchdb)
   this.client = redis.createClient(redisConf.port, redisConf.host, {
     auth_pass: redisConf.auth
   });
@@ -46,8 +48,8 @@ function DataLayer() {
   //
   this.registry = new Registry({ registry: config.get('registry') });
   this.githulk = new GitHulk({
+    tokens: config.get('tokens'),
     cache: this.couch
-    tokens: config.get('tokens')
   });
 }
 
@@ -56,7 +58,8 @@ function DataLayer() {
  *
  * @param {String} name The name of the module.
  * @param {Function} fn The callback.
- * @api private
+ * @returns {DataLayer}
+ * @api public
  */
 DataLayer.prototype.latest = function latest(name, fn) {
   var key = this.key(name, 'latest')
@@ -74,6 +77,8 @@ DataLayer.prototype.latest = function latest(name, fn) {
       fn(undefined, data.version);
     });
   });
+
+  return this;
 };
 
 /**
@@ -81,39 +86,49 @@ DataLayer.prototype.latest = function latest(name, fn) {
  *
  * @param {String} name The name of the module.
  * @param {Function} fn The callback.
+ * @returns {DataLayer}
  * @api private
  */
-DataLayer.prototype.get = function get(name, fn) {
+DataLayer.prototype.getModule = function getModule(name, fn) {
   var layer = this;
 
   //
   // Check what the latest version of module is.
   //
   layer.latest(name, function latest(err, version) {
-    if (err) return next(err);
+    if (err) return fn(err);
 
-    key = layer.key(name, version);
-    layer.redis.get(key, function cached(err, data) {
-      if (!err && data) return next(null, data);
-
-      //
-      // No data or an error, resolve the data structure.
-      //
-      layer.resolve(name, {
-        registry: layer.registry,
-        githulk: layer.githulk
-      }, function resolved(err, data) {
-        if (err || !data) fn(new Error('Missing data, resolving failed'));
-
-        //
-        // Do non-deterministic save, should it fail the next request would retry.
-        //
-        layer.redis.set(key, data, 604800);
-        fn(null, data);
-      });
-    });
+    name = layer.key(name, version);
+    layer.redis.get(name, fn);
   });
+
+  return this;
 };
+
+/**
+ * Store data as latest version of module.
+ *
+ * @param {String} name The name of the module.
+ * @param {Object} data Module details that should be stored.
+ * @param {Function} fn The callback.
+ * @returns {DataLayer}
+ * @api public
+ */
+DataLayer.prototype.setModule = function setModule(name, data, fn) {
+  var layer = this;
+
+  //
+  // Check what the latest version of module is.
+  //
+  layer.latest(name, function latest(err, version) {
+    if (err) return fn(err);
+
+    name = layer.key(name, version);
+    layer.redis.set(name, data, 604800, fn);
+  });
+
+  return this;
+}
 
 /**
  * Return the cache key for a given module. By default we are prefixing the

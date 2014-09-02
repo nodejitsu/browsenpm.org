@@ -72,7 +72,7 @@ pipe.once('listening', function listening() {
 // Start the server as soon as a set of specific plugins have initialized.
 // Without these plugins several pages will have missing data or functionality.
 //
-pipe.once('plugin:init', function start(name) {
+pipe.on('plugin:init', function start(name) {
   var n = 2;
 
   if (++i === n) pipe.listen(port);
