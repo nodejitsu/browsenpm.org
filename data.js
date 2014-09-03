@@ -46,10 +46,14 @@ function DataLayer() {
   //
   // Initialize GitHulk and npm registry API.
   //
-  this.registry = new Registry({ registry: config.get('registry') });
   this.githulk = new GitHulk({
     tokens: config.get('tokens'),
     cache: this.couch
+  });
+
+  this.registry = new Registry({
+    registry: config.get('registry') ,
+    githulk = this.githulk
   });
 }
 
