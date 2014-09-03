@@ -52,8 +52,8 @@ function DataLayer() {
   });
 
   this.registry = new Registry({
-    registry: config.get('registry') ,
-    githulk = this.githulk
+    registry: config.get('registry'),
+    githulk: this.githulk
   });
 }
 
