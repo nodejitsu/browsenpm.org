@@ -128,7 +128,8 @@ function update(done) {
       return {
         type: 'put',
         key: type,
-        value: JSON.stringify(list[type])
+        value: list[type],
+        valueEncoding: 'json'
       }
     });
 

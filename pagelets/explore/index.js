@@ -53,24 +53,20 @@ module.exports = cascade.extend({
     var grid = this;
 
     async.each(grid.blocks, function each(block, next) {
-      grid.pipe.explore.get(block.type, function cache(error, data) {
-        if (error) return next(error);
+      grid.pipe.explore.get(block.type, {
+        valueEncoding: 'json'
+      }, function cache(error, data) {
+        if (error || !data) return next(error || new Error('Missing explore data!'));
 
-        try {
-          data = JSON.parse(data);
+        //
+        // Add the live counts to the data.
+        //
+        block.hover.modules.n = data.length;
+        block.hover.contributors.n = data.reduce(function sum(n, module) {
+          return n + module.properties.maintainers;
+        }, 0);
 
-          //
-          // Add the live counts to the data.
-          //
-          block.hover.modules.n = data.length
-          block.hover.contributors.n = data.reduce(function sum(n, module) {
-            return n + module.properties.maintainers;
-          }, 0);
-
-          next();
-        } catch(err) {
-          next(err);
-        }
+        next();
       });
     }, function done(error) {
       if (error) return render(error);
