@@ -5,13 +5,14 @@ var BigPipe = require('bigpipe')
   , npm = contour.get('npm');
 
 /**
- * Define small collection of default pagelets, this prevents code duplication.
+ * Define small collection of default pagelets,
+ * this prevents code duplication.
  *
  * @constructor
  * @api public
  */
 function Pagelets() {
-  this.navigation = require('./pagelets/navigation');
+  this.navigation = require('./navigation');
   this.footer = contour.footer;
   this.analytics = contour.analytics.extend({
     data: {
@@ -38,9 +39,9 @@ Pagelets.prototype.add = function add(pagelets) {
 };
 
 //
-// Create a default page setup for browsenpm.org pages.
+// Default pagelet setup for browsenpm.org pages.
 //
-exports.Page = BigPipe.Page.extend({
+exports.Pagelet = BigPipe.Pagelet.extend({
   dependencies: [
     npm.normalize,
     npm.global,
@@ -49,7 +50,7 @@ exports.Page = BigPipe.Page.extend({
     npm.typography,
     npm.animations,
     npm.tables
-  ],
+  ]
 });
 
 //

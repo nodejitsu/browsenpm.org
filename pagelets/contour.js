@@ -7,6 +7,7 @@ var Contour = require('contour')
 // Expose singleton instance of Contour.
 //
 module.exports = new Contour({
+  pipe: require('../'),
   mode: 'bigpipe',
   brand: 'npm'
 });

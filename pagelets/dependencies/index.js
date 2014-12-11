@@ -3,7 +3,7 @@
 var GitHulk = require('githulk')
   , Dynamis = require('dynamis')
   , Registry = require('npm-registry')
-  , config = require('../config')
+  , config = require('../../config')
   , base = require('../base');
 
 //
@@ -45,9 +45,9 @@ var registry = new Registry({
 //
 // Extend the default page.
 //
-base.Page.extend({
+base.Pagelet.extend({
   path: '/dependencies/:name',
-  view: '../views/dependencies.ejs',
+  view: './base.ejs',
 
   pagelets: base.pagelets.add({
     package: require('npm-dependencies-pagelet').extend({

@@ -32,7 +32,7 @@ layout.options = {
 // Initialise the BigPipe server.
 //
 var pipe = new BigPipe(require('http').createServer(), {
-  pages: path.join(__dirname, 'pages'),
+  pagelets: path.join(__dirname, 'pagelets'),
   dist: path.join(__dirname, 'dist'),
   godot: config.get('godot'),
   plugins: [ probe, layout, watch, godot ],

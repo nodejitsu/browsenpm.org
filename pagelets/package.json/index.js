@@ -5,9 +5,9 @@ var base = require('../base');
 //
 // Extend the default page.
 //
-base.Page.extend({
+base.Pagelet.extend({
   path: '/package.json',
-  view: '../views/package.json.ejs',
+  view: './base.ejs',
 
   data: {
     title: 'package.json: an interactive guide - browsenpm.org'

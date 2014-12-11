@@ -1,6 +1,6 @@
 'use strict';
 
-var contour = require('../../contour')
+var contour = require('../contour')
   , pagelet = contour.navigation;
 
 //

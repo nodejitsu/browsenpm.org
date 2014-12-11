@@ -34,15 +34,15 @@
     "bigpipe-layout": "0.1.x",
     "bigpipe-watch": "0.1.x",
     "connect": "2.15.x",
-    "contour": "0.6.x",
+    "contour": "0.8.x",
     "cradle": "0.6.x",
     "diagnostics": "0.0.x",
     "dynamis": "0.1.x",
     "ejs": "1.0.x",
-    "githulk": "0.1.x",
+    "githulk": "0.2.x",
     "handlebars": "2.0.x",
     "memory-producer": "0.1.x",
-    "nconf": "0.6.x",
+    "nconf": "0.7.x",
     "npm-dependencies-pagelet": "0.4.x",
     "npm-documentation-pagelet": "0.5.x",
     "npm-package-json-pagelet": "0.3.x",
@@ -52,7 +52,7 @@
     "packages-pagelet": "0.8.x",
     "redis": "0.12.x",
     "registry-status-pagelet": "0.4.x",
-    "request": "2.40.x",
+    "request": "2.49.x",
     "sockjs": "0.3.x"
   }
 }

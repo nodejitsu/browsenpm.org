@@ -3,7 +3,7 @@
 //
 // Extend the default page.
 //
-require('../base').Page.extend({
+require('../base').Pagelet.extend({
   path: '/500',
-  view: '../views/500.ejs'
+  view: './base.ejs'
 }).on(module);

@@ -7,12 +7,12 @@ var base = require('../base')
 //
 // Extend the default page.
 //
-base.Page.extend({
+base.Pagelet.extend({
   path: '/help',
-  view: '../views/docs.ejs',
-  dependencies: base.Page.prototype.dependencies.concat(npm.code),
+  view: './base.ejs',
+  dependencies: base.Pagelet.prototype.dependencies.concat(npm.code),
 
   pagelets: base.pagelets.add({
-    toc: require('../pagelets/toc'),
+    toc: require('../toc'),
   })
 }).on(module);

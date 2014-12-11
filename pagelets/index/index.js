@@ -5,11 +5,11 @@ var base = require('../base');
 //
 // Extend the default page.
 //
-base.Page.extend({
-  path: '/status',
-  view: '../views/status.ejs',
+base.Pagelet.extend({
+  path: '/',
+  view: './base.ejs',
 
   pagelets: base.pagelets.add({
-    status: require('../pagelets/status'),
+    search: require('npm-search-pagelet')
   })
 }).on(module);
