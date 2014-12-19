@@ -14,19 +14,11 @@ var port = config.get('port')
   , service = config.get('service');
 
 //
-// Initialize plugins and add a valid path to base for plugin-layout.
+// Initialize plugins.
 //
 var watch = require('bigpipe-watch')
-  , layout = require('bigpipe-layout')
   , godot = require('bigpipe-godot')
   , probe = require('./plugins/npm-probe');
-
-//
-// Set base template and add default pagelets.
-//
-layout.options = {
-  base: path.join(__dirname, 'views', 'base.ejs'),
-};
 
 //
 // Initialise the BigPipe server.
@@ -35,7 +27,7 @@ var pipe = new BigPipe(require('http').createServer(), {
   pagelets: path.join(__dirname, 'pagelets'),
   dist: path.join(__dirname, 'dist'),
   godot: config.get('godot'),
-  plugins: [ probe, layout, watch, godot ],
+  plugins: [ probe, watch, godot ],
   transformer: 'sockjs'
 });
 

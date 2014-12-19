@@ -31,7 +31,6 @@
     "async": "0.9.x",
     "bigpipe": "0.8.x",
     "bigpipe-godot": "0.1.x",
-    "bigpipe-layout": "0.1.x",
     "bigpipe-watch": "0.1.x",
     "connect": "2.15.x",
     "contour": "0.8.x",
