@@ -58,6 +58,6 @@ base.Pagelet.extend({
       dependenciesPagelet: '/dependencies',
       registry: registry,
       githulk: githulk
-    }),
+    })
   })
 }).on(module);
