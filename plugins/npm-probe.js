@@ -92,10 +92,10 @@ exports.server = function server(pipe, options) {
         //
         // Write the processed data to the all websocket connections.
         //
-        pipe.primus.write({
-          data: part,
-          latest: latest[type][registry]
-        });
+        // pipe.primus.write({
+        //   data: part,
+        //   latest: latest[type][registry]
+        // });
       });
 
       //

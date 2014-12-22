@@ -32,6 +32,7 @@
     "bigpipe": "0.8.x",
     "bigpipe-godot": "0.1.x",
     "bigpipe-watch": "0.1.x",
+    "bootstrap-pagelet": "1.0.x",
     "connect": "2.15.x",
     "contour": "0.8.x",
     "cradle": "0.6.x",
