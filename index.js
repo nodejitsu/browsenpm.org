@@ -40,8 +40,8 @@ if (pipe.godot) pipe.godot.add(new Memory({ service: service }));
 // Add middleware.
 //
 pipe
-  .before(connect.static(path.join(__dirname, 'public')))
-  .before(connect.favicon(path.join(__dirname, 'public', 'favicon.png')));
+  .middleware.before(connect.static(path.join(__dirname, 'public')))
+  .middleware.before(connect.favicon(path.join(__dirname, 'public', 'favicon.png')));
 
 //
 // Listen for errors and the listen event.
