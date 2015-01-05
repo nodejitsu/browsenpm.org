@@ -1,12 +1,12 @@
-<section class="navigation" id="navigation">
+<section class="navigation {{class}}" id="navigation">
   <nav class="row">
     <h1>
       <a href="/" class="logo" title="Back to the homepage">Nodejitsu</a>
     </h1>
     <a href="#navigation" class="mobile btn-icon ss-rows"></a>
 
-    {{#navigation-links}}
-    <a href="{{href}}"{{target}}{{active}}>
+    {{#navigation-links navigation false}}
+    <a href="{{href}}"{{target}}{{{active}}}>
       {{name}}
     </a>
     {{/navigation-links}}

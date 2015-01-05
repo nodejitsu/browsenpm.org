@@ -8,6 +8,5 @@ var Contour = require('contour')
 //
 module.exports = new Contour({
   pipe: require('../'),
-  mode: 'bigpipe',
   brand: 'npm'
 });
