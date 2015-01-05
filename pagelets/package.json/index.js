@@ -14,6 +14,6 @@ base.Pagelet.extend({
   },
 
   pagelets: base.pagelets.add({
-    'package.json': require('npm-package-json-pagelet')
+    'package.json-guide': require('npm-package-json-pagelet')
   })
 }).on(module);
