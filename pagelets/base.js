@@ -1,7 +1,6 @@
 'use strict';
 
-var BigPipe = require('bigpipe')
-  , contour = require('./contour')
+var contour = require('./contour')
   , npm = contour.get('npm');
 
 /**
@@ -41,7 +40,7 @@ Pagelets.prototype.add = function add(pagelets) {
 //
 // Default pagelet setup for browsenpm.org pages.
 //
-exports.Pagelet = BigPipe.Pagelet.extend({
+exports.Pagelet = require('pagelet').extend({
   dependencies: [
     npm.normalize,
     npm.global,
