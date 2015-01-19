@@ -53,7 +53,7 @@ base.Pagelet.extend({
   view: './base.ejs',
 
   pagelets: base.pagelets.add({
-    package: require('packages-pagelet').extend({
+    details: require('packages-pagelet').extend({
       cache: new Dynamis('redis', redis, redisConf),
       dependenciesPagelet: '/dependencies',
       registry: registry,
