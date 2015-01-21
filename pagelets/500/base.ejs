@@ -1,3 +1,14 @@
+<section data-pagelet="navigation"></section>
 <section class="row">
-  <% include ../../views/error.ejs %>
+  <h1>500</h1>
+  <p>
+    Something failed, we will fix it asap, but dont hesitate to acknowledge us!
+    Go back <a href="/">to explore more of npm</a>.
+  </p>
+
+  <% if (env !== 'production' && stack) { %>
+  <pre><%= stack %></pre>
+  <% } %>
 </section>
+<section data-pagelet="footer"></section>
+<section data-pagelet="analytics"></section>

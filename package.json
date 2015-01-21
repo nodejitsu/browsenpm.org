@@ -28,6 +28,8 @@
   },
   "homepage": "https://github.com/nodejitsu/browsenpm.org",
   "dependencies": {
+    "404-pagelet": "1.0.x",
+    "500-pagelet": "1.0.x",
     "async": "0.9.x",
     "bigpipe": "0.8.x",
     "bigpipe-godot": "0.1.x",
