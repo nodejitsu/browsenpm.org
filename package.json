@@ -32,6 +32,7 @@
     "500-pagelet": "1.0.x",
     "async": "0.9.x",
     "bigpipe": "0.8.x",
+    "bigpipe-async": "1.0.x",
     "bigpipe-godot": "0.1.x",
     "bigpipe-watch": "0.1.x",
     "bootstrap-pagelet": "1.0.x",

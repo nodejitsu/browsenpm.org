@@ -18,6 +18,7 @@ var port = config.get('port')
 //
 var watch = require('bigpipe-watch')
   , godot = require('bigpipe-godot')
+  , async = require('bigpipe-async')
   , probe = require('./plugins/npm-probe');
 
 //
@@ -27,7 +28,7 @@ var pipe = new BigPipe(require('http').createServer(), {
   pagelets: path.join(__dirname, 'pagelets'),
   dist: path.join(__dirname, 'dist'),
   godot: config.get('godot'),
-  plugins: [ probe, watch, godot ],
+  plugins: [ probe, watch, godot, async ],
   transformer: 'sockjs'
 });
 
